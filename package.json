@@ -1,6 +1,6 @@
 {
   "name": "@peter.naydenov/walk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Deep copy with fine control during the process. Can be used also as a deep forEach function",
   "main": "src/main.js",
   "scripts": {
@@ -8,12 +8,10 @@
     "cover": "nyc mocha test",
     "build": "webpack --config ./webpack.config.js"
   },
-
   "repository": {
     "type": "git",
     "url": "https://github.com/PeterNaydenov/walk.git"
   },
-  
   "author": "Peter Naydenov",
   "license": "MIT",
   "devDependencies": {
