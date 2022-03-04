@@ -22,7 +22,7 @@ let result = walk ( data, callback );  // Callback function is optional!
 
 
 
-## Instalation
+## Installation
 
 Install for node.js projects by writing in your terminal:
 
