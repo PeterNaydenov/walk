@@ -139,7 +139,9 @@ describe ( 'Walk', () => {
 
                   expect ( r.ls.length ).to.be.equal  ( 0 )
                   expect ( r.props.sizes.length ).to.be.equal ( 0 )
-      })
+      }) // it No properties
+       
+}) // it show
 
 
 

@@ -61,7 +61,7 @@ function copyObject ( obj, result, extend, callback, breadcrumbs ) {
                                             result[k] = obj[k]
                                             return
                                         }
-                                    let res = callback ( obj[k], k, `${breadcrumbs}/k`);
+                                    let res = callback ( obj[k], k, `${breadcrumbs}/${k}`);
                                     if ( res == null )   return
                                     result[k] = res
                         }
