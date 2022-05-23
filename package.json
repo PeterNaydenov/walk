@@ -1,6 +1,6 @@
 {
   "name": "@peter.naydenov/walk",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Deep copy with fine control during the process. Can be used also as a deep forEach function",
   "main": "src/main.js",
   "scripts": {
