@@ -1,25 +1,44 @@
 # Walk (@peter.naydenov/walk)
 
-Creates an immutable copies of javascript data structures(objects, arrays or mixed). There is a fine control during the copy process by triggering a callback function on every object property as an option. Mask, filter or substitute values during the copy process. 
+Creates an immutable copies of javascript data structures(objects, arrays or mixed). There is a fine control during the copy process by triggering a callback function on every object property as an option(key-callback). Mask, filter or substitute values during the copy process. 
 
-Callback function of the `walk` could be used also as a deep '**forEach**' method no matter of the type of the object(object or array).
+Key-callback function of the `walk` could be used also as a deep '**forEach**' method no matter of the type of the object(object or array).
 
 
 
 ```js
-function callback (value,key,breadcrumbs) {
+function keyCallbackFn (value,key,breadcrumbs) {
     // value: value for the property
     // key:  key of the property
     // breadcrumbs: location of the property
     // Callback should return the value of the property. If function returns 'null' or 'undefined', property will be ignored.
   }
 
-let result = walk ( data, callback );  // Callback function is optional!
-
+let result = walk ( data, keyCallbackFn );  // It's the short way to provide only key-callback. Callback function is optional.
+// let result = walk ( data, [keyCallback,objectCallback] );  // If both callbacks are available
 ```
 
 
+## Object-callback ( after version 1.1.0 )
 
+Optional callback function that is started on each object property. Function should return object or will be ignored in copy process.
+
+```js
+function objectCallbackFn ( obj, breadcrumbs ) {
+      // obj: each object during the walk
+      // breadcrumbs: location of the object
+      // object callback should return an object.
+}
+
+let result = walk ( data, [ keyCallbackFn, objectCallbackFn])
+```
+
+**IMPORTANT: Object-callbacks are executed always before key-callbacks. If we have both callbacks, then key-callbacks will be executed on the result of object-callback.**
+
+Skip key-callbacks by writing 'null' on the key-callback spot.
+```js
+ let result = walk ( data, [null, objectCallbackFn])   // ignore key-callbacks
+```
 
 
 ## Installation
@@ -103,7 +122,7 @@ let result = walk ( x, (value,key) => {
 ```
 
 
-# Mask values
+### Mask values
 
 ```js
 let x = {
@@ -130,7 +149,39 @@ let result = walk ( x, v => 'xxx' )
 //   } 
 ```
 
+### Change object on condition
 
+```js
+let x = {
+          ls    : [ 1,2,3 ]
+        , name  : 'Peter'
+        , props : {
+                      eyeColor: 'blue'
+                    , age     : 48
+                    , height  : 176
+                    , sizes : [12,33,12,21]
+                }
+    };
+
+function objectCallback ( obj, breadcrumbs ) {
+    const {age, height} = obj;
+    if ( age && age > 30 ) {
+            return { age, height }
+        }
+    return obj
+}
+
+let result = walk ( x, [ null, objectCallback ])
+// 'result.props' will have only 'age' and 'height' properties.
+// {
+//      ls    : [ 1,2,3 ]
+//    , name  : 'Peter'
+//    , props : {
+//                  age     : 48
+//                , height  : 176
+//             }
+//   } 
+```
 
 
 

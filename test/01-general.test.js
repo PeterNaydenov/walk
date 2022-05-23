@@ -142,6 +142,115 @@ describe ( 'Walk', () => {
       }) // it No properties
 
 
+
+      it ( 'Object callback function only', () => {
+                let 
+                      x = {
+                                ls   : [ 1,2,3 ]
+                              , name : 'Peter'
+                              , props : {
+                                            eyeColor: 'blue'
+                                          , age     : 47
+                                          , height  : 176
+                                          , sizes : [12,33,12,21]
+                                      }
+                              };
+
+                function oCallbackFn ( o, breadcrumbs ) {
+                          const { age, height } = o;
+                          if ( age == 47 )   return { eyeColor:'dark', height }
+                          else               return o
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r.props ).to.not.have.property ( 'age'   )
+                expect ( r.props ).to.not.have.property ( 'sizes' )
+                expect ( r.props.eyeColor ).to.be.equal ( 'dark'  )
+      }) // it object callback
+
+
+      it ( 'Object callback returns null', () => {
+                let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+
+                function oCallbackFn ( o, breadcrumbs ) {
+                          const { sizes } = o;
+                          if ( sizes )   return null
+                          else           return o
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r ).to.have.property ( 'props' )
+                // 'props' should be an empty object - {}
+                expect ( r.props ).to.not.have.property ( 'age'    )
+                expect ( r.props ).to.not.have.property ( 'height' )
+                expect ( r.props ).to.not.have.property ( 'sizes'  )
+      }) // it object callback null
+
+
+
+      it ( 'Object callback returns a string', () => {
+                let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+
+                function oCallbackFn ( o, breadcrumbs ) {
+                          const { sizes } = o;
+                          if ( sizes )   return 'list'
+                          else           return o
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r ).to.have.property ( 'props' )
+                expect ( r.props ).to.have.property ( 'list' )   // {list:'list'}
+      }) // it object callback null
+
+
+
+      it ( 'Object callback changes the data', () => {
+                let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+
+                function oCallbackFn ( o, breadcrumbs ) {
+                          const { sizes } = o;
+                          if ( sizes )    o.sizes = [ 'list' ]
+                          return o
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r ).to.have.property ( 'props' )
+                expect ( r.props ).to.have.property ( 'sizes' )
+                expect ( r.props.sizes ).to.have.length ( 1 )
+                expect ( r.props.sizes[0]).to.be.equal ( 'list' )
+      }) // it object callback null
+
+
       
 }) // describe
 

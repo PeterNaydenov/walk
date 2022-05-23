@@ -1,5 +1,10 @@
 # Release History
 
+### 1.0.2 (2022-05-23)
+- [x] Object callbacks;
+
+
+
 ### 1.0.2 (2022-03-04)
 - [x] Fix: Breadcrumbs in callback are not correct;
 

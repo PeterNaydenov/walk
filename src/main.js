@@ -10,7 +10,7 @@
  *     History notes:
  *        - Development started on March 2nd, 2022
  *        - Published on GitHub for first time: March 4th, 2022
- *
+ *        - Object callback. May 23th, 2022
  */
 
 
@@ -20,15 +20,16 @@
         , result
         , extend = []
         , breadcrumbs = 'root'
+        , cb = readCallback ( callback )
         ;
     switch ( type ) {
             case 'array'  :
                                 result = []
-                                copyObject ( origin, result, extend, callback, breadcrumbs )
+                                copyObject ( origin, result, extend, cb, breadcrumbs )
                                 break
             case 'object' :
                                 result = {}
-                                copyObject ( origin, result, extend, callback, breadcrumbs )
+                                copyObject ( origin, result, extend, cb, breadcrumbs )
                                 break
             case 'simple' :
                                 return origin
@@ -36,6 +37,7 @@
     for ( const plus of extend ) {   plus.next() }
     return result
 } // walk func.
+
 
 
 function findType ( x ) {
@@ -52,29 +54,61 @@ function* generateList ( location, data, ex, callback, breadcrumbs ) {
 
 
 
+function readCallback ( callback ) {
+    let 
+          keyCallback = null
+        , objectCallback = null
+        ;
+    if ( typeof callback === 'function' )   keyCallback = callback
+    else if ( callback instanceof Array ) {
+                keyCallback = callback[0]
+                objectCallback = callback[1]
+        }
+    return [ keyCallback, objectCallback ]
+} // readCallback func.
+
+
+
 function copyObject ( obj, result, extend, callback, breadcrumbs ) {
-    let keys = Object.keys ( obj );
+    let 
+        resource
+      ,[ keyCallback, objectCallback ] = callback
+      ;
+
+    if ( objectCallback )    resource = objectCallback ( obj,  breadcrumbs )
+    else                     resource = obj
+
+    if ( resource == null )   return
+    if ( findType(resource) == 'simple' ) {
+                    const resType = findType(result)
+                    if  ( resType == 'array' )   result.push ( resource )
+                    else                         result[ resource ] = resource
+                    return
+        }
+
+
+    let keys = Object.keys ( resource );
     keys.forEach ( k => {
-                    const type = findType(obj[k]);
+                    const type = findType(resource[k]);
                     if ( type === 'simple' ) {
-                                    if ( !callback ) {  
-                                            result[k] = obj[k]
+                                    if ( !keyCallback ) {  
+                                            result[k] = resource[k]
                                             return
                                         }
-                                    let res = callback ( obj[k], k, `${breadcrumbs}/${k}`);
-                                    if ( res == null )   return
-                                    result[k] = res
+                                    let keyRes = keyCallback ( resource[k], k, `${breadcrumbs}/${k}`);
+                                    if ( keyRes == null )   return
+                                    result[k] = keyRes
                         }
                     if ( type === 'object' ) {
                             result[k] = {}
-                            extend.push ( generateList ( result[k], obj[k], extend, callback, `${breadcrumbs}/${k}` )   )
+                            extend.push ( generateList ( result[k], resource[k], extend, callback, `${breadcrumbs}/${k}` )   )
                        }
                     if ( type === 'array' ) {
                             result[k] = []
-                            extend.push ( generateList( result[k], obj[k], extend, callback, `${breadcrumbs}/${k}` )   )
+                            extend.push ( generateList( result[k], resource[k], extend, callback, `${breadcrumbs}/${k}` )   )
                         }
             })
-} // copyObj func.
+} // copyObject func.
 
 
 
