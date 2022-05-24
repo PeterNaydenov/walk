@@ -2,9 +2,8 @@
 
 Creates an immutable copies of javascript data structures(objects, arrays or mixed). There is a fine control during the copy process by triggering a callback function on every object property as an option(key-callback). Mask, filter or substitute values during the copy process. 
 
+## Key-callback
 Key-callback function of the `walk` could be used also as a deep '**forEach**' method no matter of the type of the object(object or array).
-
-
 
 ```js
 function keyCallbackFn (value,key,breadcrumbs) {
