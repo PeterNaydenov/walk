@@ -1,6 +1,6 @@
 # Walk (@peter.naydenov/walk)
 
-Creates an immutable copies of javascript data structures(objects, arrays or mixed). There is a fine control during the copy process by triggering a callback function on every object property as an option(key-callback). Mask, filter or substitute values during the copy process. 
+Creates an immutable copies of javascript data structures(objects, arrays or mixed). Executes callback functions on every object property(object-callback) and every primitive property(key-callback). Callbacks can modify result object during the walk process. Mask, filter or substitute values during the copy process. 
 
 ## Key-callback
 Key-callback function of the `walk` could be used also as a deep '**forEach**' method no matter of the type of the object(object or array).
@@ -13,7 +13,7 @@ function keyCallbackFn (value,key,breadcrumbs) {
     // Callback should return the value of the property. If function returns 'null' or 'undefined', property will be ignored.
   }
 
-let result = walk ( data, keyCallbackFn );  // It's the short way to provide only key-callback. Callback function is optional.
+let result = walk ( data, keyCallbackFn );  // It's the short way to provide only key-callback. Callback functions are optional.
 // let result = walk ( data, [keyCallback,objectCallback] );  // If both callbacks are available
 ```
 
