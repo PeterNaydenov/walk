@@ -156,7 +156,7 @@ describe ( 'Walk', () => {
                                       }
                               };
 
-                function oCallbackFn ( o, breadcrumbs ) {
+                function oCallbackFn ( o ) {
                           const { age, height } = o;
                           if ( age == 47 )   return { eyeColor:'dark', height }
                           else               return o
@@ -182,18 +182,14 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, breadcrumbs ) {
+                function oCallbackFn ( o, k, breadcrumbs ) {
                           const { sizes } = o;
                           if ( sizes )   return null
                           else           return o
                       }
 
                 let r = walk ( x, [null, oCallbackFn])
-                expect ( r ).to.have.property ( 'props' )
-                // 'props' should be an empty object - {}
-                expect ( r.props ).to.not.have.property ( 'age'    )
-                expect ( r.props ).to.not.have.property ( 'height' )
-                expect ( r.props ).to.not.have.property ( 'sizes'  )
+                expect ( r ).to.not.have.property ( 'props' )                
       }) // it object callback null
 
 
@@ -211,7 +207,7 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, breadcrumbs ) {
+                function oCallbackFn ( o ) {
                           const { sizes } = o;
                           if ( sizes )   return 'list'
                           else           return o
@@ -219,7 +215,7 @@ describe ( 'Walk', () => {
 
                 let r = walk ( x, [null, oCallbackFn])
                 expect ( r ).to.have.property ( 'props' )
-                expect ( r.props ).to.have.property ( 'list' )   // {list:'list'}
+                expect ( r.props ).to.be.equal ( 'list' )
       }) // it object callback null
 
 
@@ -237,7 +233,7 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, breadcrumbs ) {
+                function oCallbackFn ( o, k, breadcrumbs ) {
                           const { sizes } = o;
                           if ( sizes )    o.sizes = [ 'list' ]
                           return o
@@ -248,7 +244,55 @@ describe ( 'Walk', () => {
                 expect ( r.props ).to.have.property ( 'sizes' )
                 expect ( r.props.sizes ).to.have.length ( 1 )
                 expect ( r.props.sizes[0]).to.be.equal ( 'list' )
-      }) // it object callback null
+      }) // it object callback changes the data
+
+
+
+      it ( 'Object callback checks key', () => {
+                let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+
+                function oCallbackFn ( o, key, breadcrumbs ) {
+                          if ( key === 'props' )   return null
+                          return o
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r ).to.not.have.property ( 'props' )                
+      }) // it Object callback checks key
+
+
+
+      it ( 'Object callback checks breadcrumbs', () => {
+                let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+
+                function oCallbackFn ( o, key, breadcrumbs ) {
+                          if ( breadcrumbs === 'root/props' )   return null
+                          return o
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r ).to.not.have.property ( 'props' )                
+      }) // it Object callback checks breadcrumbs
 
 
       

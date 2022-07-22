@@ -1,6 +1,14 @@
 # Release History
 
-### 1.0.2 (2022-05-23)
+
+### 2.0.0 ( 2022-07-22)
+- [x] Object callback has new argument 'key'. Arguments are ( obj, key, breadcrumbs );
+- [x] When object-callback returns null the property will disappear;
+- [x] If object-callback returns string, object will be substituted with this string;
+
+
+
+### 1.1.0 (2022-05-23)
 - [x] Object callbacks;
 
 

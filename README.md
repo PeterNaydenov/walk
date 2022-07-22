@@ -23,8 +23,9 @@ let result = walk ( data, keyCallbackFn );  // It's the short way to provide onl
 Optional callback function that is started on each object property. Function should return object or will be ignored in copy process.
 
 ```js
-function objectCallbackFn ( obj, breadcrumbs ) {
+function objectCallbackFn ( obj, key, breadcrumbs ) {
       // obj: each object during the walk
+      // key: key of the object
       // breadcrumbs: location of the object
       // object callback should return an object.
 }
@@ -162,7 +163,7 @@ let x = {
                 }
     };
 
-function objectCallback ( obj, breadcrumbs ) {
+function objectCallback ( obj, key, breadcrumbs ) {
     const {age, height} = obj;
     if ( age && age > 30 ) {
             return { age, height }
