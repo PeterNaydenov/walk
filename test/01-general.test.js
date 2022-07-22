@@ -295,6 +295,46 @@ describe ( 'Walk', () => {
       }) // it Object callback checks breadcrumbs
 
 
+
+      it ( 'Prevent array empty items', () => {
+                let 
+                    x = [
+                              { id: 1 }
+                            , { id: 2 }
+                            , { id: 3 }
+                            , { id: 5 }
+                        ];
+
+                function oCallbackFn ( o, key, breadcrumbs ) {
+                          if ( o.id === 5 )   return o
+                          return null
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r.length ).to.be.equal ( 1 )
+      }) // it Prevent array empty items
+
+
+
+      it ( 'Prevent array empty items 2', () => {
+                let 
+                    x = [
+                              [1]
+                            , [2]
+                            , [3]
+                            , [5]
+                        ];
+
+                function oCallbackFn ( o, key, breadcrumbs ) {
+                          if ( o[0] === 5 )   return o
+                          return null
+                      }
+
+                let r = walk ( x, [null, oCallbackFn])
+                expect ( r.length ).to.be.equal ( 1 )
+      }) // it Prevent array empty items 2
+
+
       
 }) // describe
 

@@ -79,32 +79,36 @@ function copyObject ( obj, result, extend, callback, breadcrumbs ) {
     keys.forEach ( k => {
                     let 
                           type = findType(resource[k])
-                        , obj  = resource[k]
+                        , item  = resource[k]
+                        , resultIsArray = (findType (result) === 'array') 
+                        , keyNumber = !isNaN ( k )
                         ;
-                    if ( type !== 'simple' ) {
-                                if ( objectCallback ) {  
-                                        obj = objectCallback ( obj, k, `${breadcrumbs}/${k}` )
-                                        if ( obj == null )   return
-                                        type = findType ( obj )
-                                    }
+                    if ( type !== 'simple' && objectCallback ) {
+                                        item = objectCallback ( item, k, `${breadcrumbs}/${k}` )
+                                        if ( item == null )   return
+                                        type = findType ( item )
                        }
 
                     if ( type === 'simple' ) {
                                     if ( !keyCallback ) {  
-                                            result[k] = obj
+                                            result[k] = item
                                             return
                                         }
-                                    let keyRes = keyCallback ( obj, k, `${breadcrumbs}/${k}`);
+                                    let keyRes = keyCallback ( item, k, `${breadcrumbs}/${k}`);
                                     if ( keyRes == null )   return
                                     result[k] = keyRes
                         }
                     if ( type === 'object' ) {
-                            result[k] = {}
-                            extend.push ( generateList ( result[k], obj, extend, callback, `${breadcrumbs}/${k}` )   )
+                            const newObject = {};
+                            if ( resultIsArray && keyNumber )   result.push ( newObject )
+                            else                                result[k] = newObject
+                            extend.push ( generateList ( newObject, item, extend, callback, `${breadcrumbs}/${k}` )   )
                        }
                     if ( type === 'array' ) {
-                            result[k] = []
-                            extend.push ( generateList( result[k], obj, extend, callback, `${breadcrumbs}/${k}` )   )
+                            const newArray = [];
+                            if ( resultIsArray && keyNumber )   result.push ( newArray )
+                            else                                result[k] = newArray
+                            extend.push ( generateList( newArray, item, extend, callback, `${breadcrumbs}/${k}` )   )
                         }
             })
 } // copyObject func.
