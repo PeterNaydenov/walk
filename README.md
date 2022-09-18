@@ -74,7 +74,9 @@ or
 import walk from '@peter.naydenov/walk'
 ```
 
-**Installation for browsers**: Get the file `"dist/walk.min.js"` and put it inside the project. Request the file from HTML page. Global variable 'walk' is available for use.
+**Installation for browsers**: Get the file `"dist/walk.min.js"` and put it inside the project. Request the file from HTML page. Global variable 'walk' is available for use. 
+
+Versions of `walk` after v.3.1.x are buided as ES module, so don't forget to add `type="module"`. 
 
         Note:
         Library is using 'generator functions'. If support for old browsers 
