@@ -12,7 +12,7 @@ describe ( 'Walk', () => {
     it ( 'Copy a primitive value', () => {
                 let
                       x = 12
-                    , r = walk ( x, v => v )
+                    , r = walk ({data:x})
                     ;
 
                 x = 64
@@ -25,7 +25,7 @@ describe ( 'Walk', () => {
     it ( 'Copy array of strings', () => {
                 let 
                       x = [ 'one', 'two', 'three' ]
-                    , r = walk ( x, v => v )
+                    , r = walk ({ data : x })
                     ;
                 x.push ( 'four' )
                 expect ( r ).to.have.length ( 3 )
@@ -36,7 +36,7 @@ describe ( 'Walk', () => {
     it ( 'Copy a single level deep object', () => {
                 let 
                       x = { name:'Peter', age: 47 }
-                    , r = walk ( x )
+                    , r = walk ({ data:x })
                     , z = x
                     ;
                 x.test = 'hello'
@@ -58,7 +58,7 @@ describe ( 'Walk', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             }
-                  , r = walk ( x )
+                  , r = walk ({ data : x })
                   ;
                 r.props.sizes.push ( 66 )
                 x.props.sizes[0] = 222222
@@ -85,10 +85,13 @@ describe ( 'Walk', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             }
-                  , r = walk ( x, (v,k) => {
-                                        if ( k === 'name' )   return null
-                                        return v
-                                  })
+                  , r = walk ({ 
+                                  data : x
+                                , keyCallback : ({value:v,key:k}) => {
+                                                      if ( k === 'name' )   return null
+                                                      return v
+                                                  }
+                          })
                   ;
               expect ( r ).to.not.have.property ( 'name' )
        })  // it Hide a property
@@ -107,10 +110,13 @@ describe ( 'Walk', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             };
-                let r = walk ( x, (v,k,breadcrumbs) => {
-                                            if ( breadcrumbs.includes('root/props/sizes'))   return null
-                                            return 'xxx' 
-                                      })
+                let r = walk ({ 
+                                  data : x
+                                , keyCallback : ({value:v,key:k,breadcrumbs}) => {
+                                                        if ( breadcrumbs.includes('root/props/sizes'))   return null
+                                                        return 'xxx' 
+                                                    }
+                          })
                 expect ( r.name       ).to.be.equal ( 'xxx' )
                 expect ( r.props.age  ).to.be.equal ( 'xxx' )
                 expect ( r.props.sizes.length ).to.be.equal ( 0 )
@@ -129,7 +135,7 @@ describe ( 'Walk', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             };
-                  let r = walk ( x, v => null )
+                  let r = walk ({ data:x, keyCallback: () => null })
                   expect ( r ).to.have.property ( 'ls' )
                   expect ( r ).to.have.property ( 'props' )
                   expect ( r.props ).to.have.property ( 'sizes' )
@@ -156,13 +162,13 @@ describe ( 'Walk', () => {
                                       }
                               };
 
-                function oCallbackFn ( o ) {
+                function oCallbackFn ({ value:o }) {
                           const { age, height } = o;
                           if ( age == 47 )   return { eyeColor:'dark', height }
                           else               return o
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data:x, objectCallback:oCallbackFn })
                 expect ( r.props ).to.not.have.property ( 'age'   )
                 expect ( r.props ).to.not.have.property ( 'sizes' )
                 expect ( r.props.eyeColor ).to.be.equal ( 'dark'  )
@@ -182,13 +188,13 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, k, breadcrumbs ) {
+                function oCallbackFn ({ value:o, key:k, breadcrumbs }) {
                           const { sizes } = o;
                           if ( sizes )   return null
                           else           return o
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data : x, objectCallback: oCallbackFn })
                 expect ( r ).to.not.have.property ( 'props' )                
       }) // it object callback null
 
@@ -207,13 +213,13 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o ) {
+                function oCallbackFn ({ value:o }) {
                           const { sizes } = o;
                           if ( sizes )   return 'list'
                           else           return o
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data : x, objectCallback : oCallbackFn })
                 expect ( r ).to.have.property ( 'props' )
                 expect ( r.props ).to.be.equal ( 'list' )
       }) // it object callback null
@@ -233,13 +239,13 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, k, breadcrumbs ) {
+                function oCallbackFn ({ value:o, key:k }) {
                           const { sizes } = o;
                           if ( sizes )    o.sizes = [ 'list' ]
                           return o
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data:x, objectCallback:oCallbackFn })
                 expect ( r ).to.have.property ( 'props' )
                 expect ( r.props ).to.have.property ( 'sizes' )
                 expect ( r.props.sizes ).to.have.length ( 1 )
@@ -261,12 +267,12 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, key, breadcrumbs ) {
+                function oCallbackFn ({ value:o, key, breadcrumbs }) {
                           if ( key === 'props' )   return null
                           return o
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data : x, objectCallback: oCallbackFn })
                 expect ( r ).to.not.have.property ( 'props' )                
       }) // it Object callback checks key
 
@@ -285,12 +291,12 @@ describe ( 'Walk', () => {
                                     }
                             };
 
-                function oCallbackFn ( o, key, breadcrumbs ) {
+                function oCallbackFn ({ value:o, key, breadcrumbs }) {
                           if ( breadcrumbs === 'root/props' )   return null
                           return o
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data:x, objectCallback:oCallbackFn })
                 expect ( r ).to.not.have.property ( 'props' )                
       }) // it Object callback checks breadcrumbs
 
@@ -305,12 +311,12 @@ describe ( 'Walk', () => {
                             , { id: 5 }
                         ];
 
-                function oCallbackFn ( o, key, breadcrumbs ) {
+                function oCallbackFn ({ value:o }) {
                           if ( o.id === 5 )   return o
                           return null
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data : x, objectCallback : oCallbackFn })
                 expect ( r.length ).to.be.equal ( 1 )
       }) // it Prevent array empty items
 
@@ -325,12 +331,12 @@ describe ( 'Walk', () => {
                             , [5]
                         ];
 
-                function oCallbackFn ( o, key, breadcrumbs ) {
+                function oCallbackFn ({ value:o, key, breadcrumbs }) {
                           if ( o[0] === 5 )   return o
                           return null
                       }
 
-                let r = walk ( x, [null, oCallbackFn])
+                let r = walk ({ data:x, objectCallback: oCallbackFn })
                 expect ( r.length ).to.be.equal ( 1 )
       }) // it Prevent array empty items 2
 

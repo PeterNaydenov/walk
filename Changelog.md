@@ -1,5 +1,7 @@
 # Release History
 
+### 3.0.0 ( 2022-09-18 )
+- [x] Interface changes - Named arguments.
 
 ### 2.0.1 ( 2022-07-22)
 - [x] Rebuilds an array indexes;
