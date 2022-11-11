@@ -28,7 +28,7 @@ function keyCallbackFn ({value,key,breadcrumbs}) {
   }
 
 let result = walk ({ data, keyCallback: keyCallbackFn });  // It's the short way to provide only key-callback. Callback functions are optional.
-// let result = walk ( data, [keyCallback,objectCallback] );  // If both callbacks are available
+// let result = walk ({ data, keyCallback, objectCallback });  // If both callbacks are available
 ```
 
 
@@ -108,7 +108,7 @@ let x = {
                 }
     };
 
-walk ({ x, keyCallback : ({value,key, breadcrumbs}) => {
+walk ({ data:x, keyCallback : ({value,key, breadcrumbs}) => {
                   console.log (`${key} ----> ${value}`)   // Show each each primitive couples key->value
                   console.log ( `Property location >> ${breadcrumbs}`)
                   // example for breadcrumbs: 'age' will looks like this : 'root/props/age'
