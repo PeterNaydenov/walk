@@ -70,6 +70,16 @@ describe ( 'Walk: Deep copy', () => {
 
                 expect ( r.props ).to.not.have.property ( 'test' )
         }) // it Copy a mixed structure
+
+
+    it ( 'Data property has value "null"', () => {
+          const
+              data = { name : null }
+            , r = walk ({data})
+            ;
+          expect ( r ).to.have.property ( 'name' )
+          expect ( r.name ).to.be.equal ( null )
+    }) // it Data property has value null
       
 }) // describe
 

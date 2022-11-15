@@ -30,6 +30,7 @@ function walk ({ data:origin, keyCallback, objectCallback }) {
         , breadcrumbs = 'root'
         , cb = [ keyCallback, objectCallback ]
         ;
+        
     switch ( type ) {
             case 'array'  :
                                 result = []

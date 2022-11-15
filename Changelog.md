@@ -1,10 +1,21 @@
 # Release History
 
+
+
+### 3.0.1 (2022-11-15)
+- [x] Fix: Breaks if object contains value 'null';
+
+
+
 ### 3.0.0 ( 2022-09-18 )
 - [x] Interface changes - Named arguments.
+- [ ] Bug: Breaks if object contains value 'null';
+
+
 
 ### 2.0.1 ( 2022-07-22)
 - [x] Rebuilds an array indexes;
+- [ ] Bug: Breaks if object contains value 'null';
 
 
 
@@ -12,6 +23,7 @@
 - [x] Object callback has new argument 'key'. Arguments are ( obj, key, breadcrumbs );
 - [x] When object-callback returns null the property will disappear;
 - [x] If object-callback returns string, object will be substituted with this string;
+- [ ] Bug: Breaks if object contains value 'null';
 
 
 
