@@ -80,6 +80,19 @@ describe ( 'Walk: Deep copy', () => {
           expect ( r ).to.have.property ( 'name' )
           expect ( r.name ).to.be.equal ( null )
     }) // it Data property has value null
+
+
+    it ( 'Data property has "boolean" value', () => {
+        const data = {   // Booleans
+                      happy : true  
+                    , sad   : false
+                };
+        const r = walk ({ data });
+        expect ( r ).to.have.property ( 'happy' )
+        expect ( r.happy ).to.be.true
+        expect ( r ).to.have.property ( 'sad' )
+        expect ( r.sad ).to.be.false
+    }) // it Data property has "boolean" value
       
 }) // describe
 
