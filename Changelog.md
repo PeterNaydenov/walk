@@ -1,6 +1,11 @@
 # Release History
 
 
+### 4.0.0 (2022-11-23)
+- [x] Callbacks should return const IGNORE if key-value pear should be ignored;
+- [x] `Null` and `undefined` returned from callback functions will be treated as values;
+
+
 
 ### 3.0.1 (2022-11-15)
 - [x] Fix: Breaks if object contains value 'null';
