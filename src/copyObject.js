@@ -16,10 +16,11 @@ function copyObject ( resource, result, extend, cb, breadcrumbs ) {
                         , item  = resource[k]
                         , resultIsArray = (findType (result) === 'array') 
                         , keyNumber = !isNaN ( k )
+                        , IGNORE = Symbol ( 'ignore___' )
                         ;
                     if ( type !== 'simple' && objectCallback ) {
-                                        item = objectCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}` })
-                                        if ( item == null )   return
+                                        item = objectCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`, IGNORE })
+                                        if ( item === IGNORE )   return
                                         type = findType ( item )
                         }
 
@@ -28,11 +29,11 @@ function copyObject ( resource, result, extend, cb, breadcrumbs ) {
                                             result[k] = item
                                             return
                                         }
-                                    let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`});
-                                    if ( keyRes == null )   return
-                                    const canInsert = validateForInsertion ( k, result );
-                                    if ( canInsert )  result.push ( keyRes )
-                                    else              result [k] = keyRes
+                                    let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`, IGNORE });
+                                    if ( keyRes === IGNORE )   return
+                                    const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
+                                    if ( canInsert )  result.push ( keyRes ) // It's an array
+                                    else              result [k] = keyRes    // It's an object
                         }
                     if ( type === 'object' ) {
                             const newObject = {};

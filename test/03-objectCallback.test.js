@@ -47,9 +47,9 @@ describe ( 'Walk: objectCallback', () => {
                                     }
                             };
 
-                function oCallbackFn ({ value:o, key:k, breadcrumbs }) {
+                function oCallbackFn ({ value:o, key:k, breadcrumbs, IGNORE }) {
                           const { sizes } = o;
-                          if ( sizes )   return null
+                          if ( sizes )   return IGNORE
                           else           return o
                       }
 
@@ -59,7 +59,7 @@ describe ( 'Walk: objectCallback', () => {
 
 
 
-      it ( 'Object callback returns a string', () => {
+    it ( 'Object callback returns a string', () => {
                 let 
                     x = {
                               ls   : [ 1,2,3 ]
@@ -85,7 +85,7 @@ describe ( 'Walk: objectCallback', () => {
 
 
 
-      it ( 'Object callback changes the data', () => {
+    it ( 'Object callback changes the data', () => {
                 let 
                     x = {
                               ls   : [ 1,2,3 ]
@@ -113,7 +113,7 @@ describe ( 'Walk: objectCallback', () => {
 
 
 
-      it ( 'Object callback checks key', () => {
+    it ( 'Object callback checks key', () => {
                 let 
                     x = {
                               ls   : [ 1,2,3 ]
@@ -126,8 +126,8 @@ describe ( 'Walk: objectCallback', () => {
                                     }
                             };
 
-                function oCallbackFn ({ value:o, key, breadcrumbs }) {
-                          if ( key === 'props' )   return null
+                function oCallbackFn ({ value:o, key, IGNORE }) {
+                          if ( key === 'props' )   return IGNORE
                           return o
                       }
 
@@ -137,7 +137,7 @@ describe ( 'Walk: objectCallback', () => {
 
 
 
-      it ( 'Object callback checks breadcrumbs', () => {
+    it ( 'Object callback checks breadcrumbs', () => {
                 let 
                     x = {
                               ls   : [ 1,2,3 ]
@@ -150,18 +150,18 @@ describe ( 'Walk: objectCallback', () => {
                                     }
                             };
 
-                function oCallbackFn ({ value:o, key, breadcrumbs }) {
-                          if ( breadcrumbs === 'root/props' )   return null
+                function oCallbackFn ({ value:o, key, breadcrumbs, IGNORE }) {
+                          if ( breadcrumbs === 'root/props' )   return IGNORE
                           return o
                       }
 
                 let r = walk ({ data:x, objectCallback:oCallbackFn })
-                expect ( r ).to.not.have.property ( 'props' )                
+                expect ( r ).to.not.have.property ( 'props' )
       }) // it Object callback checks breadcrumbs
 
 
 
-      it ( 'Prevent array empty items', () => {
+    it ( 'Prevent array empty items', () => {
                 let 
                     x = [
                               { id: 1 }
@@ -170,9 +170,9 @@ describe ( 'Walk: objectCallback', () => {
                             , { id: 5 }
                         ];
 
-                function oCallbackFn ({ value:o }) {
+                function oCallbackFn ({ value:o, IGNORE }) {
                           if ( o.id === 5 )   return o
-                          return null
+                          return IGNORE
                       }
 
                 let r = walk ({ data : x, objectCallback : oCallbackFn })
@@ -181,7 +181,7 @@ describe ( 'Walk: objectCallback', () => {
 
 
 
-      it ( 'Prevent array empty items 2', () => {
+    it ( 'Prevent array empty items 2', () => {
                 let 
                     x = [
                               [1]
@@ -190,14 +190,59 @@ describe ( 'Walk: objectCallback', () => {
                             , [5]
                         ];
 
-                function oCallbackFn ({ value:o, key, breadcrumbs }) {
+                function oCallbackFn ({ value:o, IGNORE }) {
                           if ( o[0] === 5 )   return o
-                          return null
+                          return IGNORE
                       }
 
                 let r = walk ({ data:x, objectCallback: oCallbackFn })
                 expect ( r.length ).to.be.equal ( 1 )
       }) // it Prevent array empty items 2
+
+
+    it ( 'Set a value to NULL', () => {
+                 let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+                  
+                  function objToNull ({value,key }) {
+                            if ( key === 'props' )   return null
+                            return value
+                      } // objToNull func.
+
+                  let r = walk ({ data:x, objectCallback:objToNull })
+                  expect ( r.props ).to.be.equal ( null )
+      }) // it Set a value to NULL
+
+    it ( 'Set a value to undefined', () => {
+                 let 
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: 'blue'
+                                        , age     : 47
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            };
+                  
+                  function objToNull ({value,key }) {
+                            if ( key === 'props' )   return undefined
+                            return value
+                      } // objToNull func.
+
+                  let r = walk ({ data:x, objectCallback:objToNull })
+                  expect ( r.props ).to.be.equal ( undefined )
+      }) // it Set a value to NULL
 
 
       

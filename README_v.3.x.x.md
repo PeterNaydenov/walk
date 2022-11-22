@@ -1,6 +1,9 @@
-# Walk (@peter.naydenov/walk) ( Version 4.x.x )
+# Walk (@peter.naydenov/walk) ( Version 3.x.x )
 
-Creates an immutable copies of javascript data structures(objects, arrays or mixed). Executes callback functions on every object property(object-callback) and every primitive property(key-callback). Callbacks can modify result-object during the walk process. Mask, filter or substitute values during the copy process. 
+- [Documentation for old v.2.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.2.x.x.md)
+- [Migration guides](https://github.com/PeterNaydenov/walk/blob/master/Migration.guide.md)
+
+Creates an immutable copies of javascript data structures(objects, arrays or mixed). Executes callback functions on every object property(object-callback) and every primitive property(key-callback). Callbacks can modify result object during the walk process. Mask, filter or substitute values during the copy process. 
 
 ```js
 const result = walk ({
@@ -13,41 +16,15 @@ const result = walk ({
 // - if callbacks are resolved with "value" without modification
 ```
 
-Version 4 is coming with support for all primitive types including `null` and `undefined`. For simplify your migration effort here are the instructions:
-- [Migration guides](https://github.com/PeterNaydenov/walk/blob/master/Migration.guide.md)
-
-If you still using older versions of the library - find here the documentation:
-- [Documentation for walk v.3.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.3.x.x.md)
-- [Documentation for walk v.2.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.2.x.x.md)
-
-
-Data structure values must be one of the following data types:
- - string;
- - number;
- - bigint;
- - boolean;
- - symbol;
- - null;
- - undefined;
- - array;
- - object(data only);
- - function;
-
- Other data types can compromise the results;
-
-
-
 ## keyCallback
-function "**keyCallback**" of the `walk` could be used also as a deep '**forEach**' method no matter of the type of the object(object or array). KeyCallback will be executed on keys that have value type: *string, number, bigint, boolean, symbol, null, undefined, and function*.
-Object and arrays will be executed only in objectCallback.
+function "**keyCallback**" of the `walk` could be used also as a deep '**forEach**' method no matter of the type of the object(object or array).
 
 ```js
-function keyCallbackFn ({value,key,breadcrumbs, IGNORE }) {
-    // value: value for the property;
-    // key:  key of the property;
-    // breadcrumbs: location of the property;
-    // IGNORE: constant. Return it if key-value pair should be ignored;
-    // Callback should return the value of the property. To ignore property, return constant argument IGNORE
+function keyCallbackFn ({value,key,breadcrumbs}) {
+    // value: value for the property
+    // key:  key of the property
+    // breadcrumbs: location of the property
+    // Callback should return the value of the property. If function returns 'null' or 'undefined', property will be ignored.
   }
 
 let result = walk ({ data, keyCallback: keyCallbackFn });  // It's the short way to provide only key-callback. Callback functions are optional.
@@ -60,12 +37,11 @@ let result = walk ({ data, keyCallback: keyCallbackFn });  // It's the short way
 Optional callback function that is started on each object property. Function should return object or will be ignored in copy process.
 
 ```js
-function objectCallbackFn ({ value, key, breadcrumbs, IGNORE }) {
+function objectCallbackFn ({ value, key, breadcrumbs }) {
       // value: each object during the walk
       // key: key of the object
       // breadcrumbs: location of the object
-      // IGNORE: Constant. Return it if key-value pair should be ignored;
-      // object callback should return something.
+      // object callback should return an object.
 }
 
 let result = walk ({ data, keyCallback:keyCallbackFn, objectCallback : objectCallbackFn })
@@ -89,14 +65,24 @@ npm install @peter.naydenov/walk
 
 Once it has been installed, it can be used by writing this line of JavaScript:
 ```js
+let walk = require ( '@peter.naydenov/walk' )
+```
+
+or
+
+```js
 import walk from '@peter.naydenov/walk'
 ```
+
+**Installation for browsers**: Get the file `"dist/walk.min.js"` and put it inside the project. Request the file from HTML page. Global variable 'walk' is available for use. 
 
 Versions of `walk` after v.3.1.x are buided as ES module, so don't forget to add `type="module"`. 
 
         Note:
         Library is using 'generator functions'. If support for old browsers 
         is required, add a polyfill for 'generators'.
+
+
 
 
 
@@ -144,8 +130,8 @@ let x = {
                     , sizes : [12,33,12,21]
                 }
     };
-let result = walk ({ data:x, keyCallback : ({ value, key, IGNORE }) => {
-                        if ( key === 'name' )   return IGNORE
+let result = walk ({ data:x, keyCallback : ({value,key}) => {
+                        if ( key === 'name' )   return null
                         return value
                 })
 // result will copy all properties from x without the property 'name'.
