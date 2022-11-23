@@ -57,6 +57,7 @@ describe ( 'Walk: keyCallback', () => {
                 expect ( r.props.sizes.length ).to.be.equal ( 0 )
       })   // it Provide a structure
 
+      
 
     it ( 'No properties. Just structures', () => {
                   let 
@@ -83,6 +84,7 @@ describe ( 'Walk: keyCallback', () => {
       }) // it No properties
 
       
+
     it ( 'Set a value to NULL', () => {
                 let
                     x = {
@@ -103,6 +105,8 @@ describe ( 'Walk: keyCallback', () => {
                 let r  = walk ({ data:x, keyCallback:checkNull })
                 expect ( r.props.eyeColor ).to.be.equal ( null )
       }) // it set a value to NULL
+
+
 
     it ( 'Set a value to undefined', () => {
                  let

@@ -242,7 +242,7 @@ describe ( 'Walk: objectCallback', () => {
 
                   let r = walk ({ data:x, objectCallback:objToNull })
                   expect ( r.props ).to.be.equal ( undefined )
-      }) // it Set a value to NULL
+      }) // it Set a value to undefined
 
 
       

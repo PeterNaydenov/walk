@@ -223,6 +223,7 @@ These limitations are covered in a bit larger library - [walk-async](https://git
 
 ## Links
 - [Release history](Changelog.md)
+- [ Walk-async library](https://github.com/PeterNaydenov/walk-async)
 
 ## Credits
 '@peter.naydenov/walk' was created and supported by Peter Naydenov.
