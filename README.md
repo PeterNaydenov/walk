@@ -1,5 +1,8 @@
 # Walk (@peter.naydenov/walk) ( Version 4.x.x )
 
+![version](https://img.shields.io/github/package-json/v/peterNaydenov/walk)
+![license](https://img.shields.io/github/license/peterNaydenov/walk)
+
 Creates an immutable copies of javascript data structures(objects, arrays or mixed). Executes callback functions on every object property(object-callback) and every primitive property(key-callback). Callbacks can modify result-object during the walk process. Mask, filter or substitute values during the copy process. 
 
 ```js
