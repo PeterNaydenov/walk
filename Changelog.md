@@ -1,6 +1,13 @@
 # Release History
 
 
+
+
+### 4.1.0 (2023-09-19)
+ - [x] HTML DOM nodes - copy by reference; 
+
+
+
 ### 4.0.0 (2022-11-23)
 - [x] Callbacks should return const IGNORE if key-value pear should be ignored;
 - [x] `Null` and `undefined` returned from callback functions will be treated as values;

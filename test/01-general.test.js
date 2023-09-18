@@ -2,6 +2,7 @@
 
 import chai from 'chai'
 import walk from '../src/main.js'
+
 const expect = chai.expect;
 
 
@@ -72,6 +73,7 @@ describe ( 'Walk: Deep copy', () => {
         }) // it Copy a mixed structure
 
 
+
     it ( 'Data property has value "null"', () => {
           const
               data = { name : null }
@@ -80,6 +82,7 @@ describe ( 'Walk: Deep copy', () => {
           expect ( r ).to.have.property ( 'name' )
           expect ( r.name ).to.be.equal ( null )
     }) // it Data property has value null
+
 
 
     it ( 'Data property has "boolean" value', () => {
@@ -93,6 +96,30 @@ describe ( 'Walk: Deep copy', () => {
         expect ( r ).to.have.property ( 'sad' )
         expect ( r.sad ).to.be.false
     }) // it Data property has "boolean" value
+
+
+
+    it ( 'html nodes - copy by reference', () => {
+          const data = {
+                        name : 'Peter'
+                      , pretendHTML : { nodeType: 1 }
+                  };
+          const r = walk ({ data });
+          r.pretendHTML.something = 'hello'
+          expect ( data.pretendHTML.something ).to.be.equal ( 'hello' )   // Recognize html nodes and keep them as a reference
+      }) // html nodes - copy by reference
+
+
+
+    it ( 'Functions type - copy by reference', () => {
+              const data = {
+                            name : 'Peter'
+                          , func : () => 12
+                      };
+                      
+              const r = walk ({ data });
+              expect ( r.func() ).to.be.equal ( 12 )
+      }) // it Functions type - copy by reference
       
 }) // describe
 
