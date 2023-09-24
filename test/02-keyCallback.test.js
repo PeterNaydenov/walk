@@ -152,6 +152,43 @@ describe ( 'Walk: keyCallback', () => {
                 expect ( r.props.age() ).to.be.equal ( 47 )
       }) // it Copy a function
 
+
+   it ( 'Extract collections', () => {
+                let
+                    x = {
+                              ls   : [ 1,2,3 ]
+                            , name : 'Peter'
+                            , props : {
+                                          eyeColor: undefined   // Use callback and return this exact value
+                                        , age     : function age () { return 47 } 
+                                        , height  : 176
+                                        , sizes : [12,33,12,21]
+                                    }
+                            }
+                    , fnList = []           // collection containers should be object or array
+                    , propsCollection = {}  // because 
+                    ;
+
+                function extractFn ({key,value}, fn, p ) { // fn and p are collections containers
+                            const isFn = typeof value === 'function';
+                            if ( isFn )   fn.push ( value ) // Create a list of function properties;
+                            // v--- extract 3 properties from the object. No matter where they are
+                            if ( ['name','eyeColor', 'age' ].includes(key) )  p[key] = isFn? value() : value
+                            return value
+                        } // extractFn func.
+
+                let r = walk ({ data:x, keyCallback:extractFn }, fnList, propsCollection ); // Provide a collection containers
+
+                expect ( fnList ).to.have.length ( 1 ) // There is only one function in the object
+                expect ( fnList[0]() ).to.be.equal ( 47 )
+                expect ( propsCollection ).to.have.property ( 'name' )
+                expect ( propsCollection ).to.have.property ( 'eyeColor' )
+                expect ( propsCollection ).to.have.property ( 'age' )
+                expect ( propsCollection ).to.not.have.property ( 'height' )
+                expect ( propsCollection.age ).to.be.equal ( 47 )
+                expect ( r.props.age() ).to.be.equal ( 47 )
+      }) // it  Extract collections
+
       
       
 }) // describe

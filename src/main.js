@@ -22,7 +22,7 @@ import copyObject from "./copyObject.js";
 
 
 
-function walk ({ data:origin, keyCallback, objectCallback }) {
+function walk ({ data:origin, keyCallback, objectCallback },...args) {
     let 
           type = findType ( origin )
         , result
@@ -30,15 +30,15 @@ function walk ({ data:origin, keyCallback, objectCallback }) {
         , breadcrumbs = 'root'
         , cb = [ keyCallback, objectCallback ]
         ;
-        
+
     switch ( type ) {
             case 'array'  :
                                 result = []
-                                copyObject ( origin, result, extend, cb, breadcrumbs )
+                                copyObject ( origin, result, extend, cb, breadcrumbs, ...args )
                                 break
             case 'object' :
                                 result = {}
-                                copyObject ( origin, result, extend, cb, breadcrumbs )
+                                copyObject ( origin, result, extend, cb, breadcrumbs, ...args )
                                 break
             case 'simple' :
                                 return origin

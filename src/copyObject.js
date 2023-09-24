@@ -5,11 +5,12 @@ import validateForInsertion from "./validateForInsertion.js";
 
 
 
-function copyObject ( resource, result, extend, cb, breadcrumbs ) {
+function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
     let 
           [ keyCallback, objectCallback ] = cb
         , keys = Object.keys ( resource )
         ;
+        
     keys.forEach ( k => {
                     let 
                           type = findType(resource[k])
@@ -18,8 +19,9 @@ function copyObject ( resource, result, extend, cb, breadcrumbs ) {
                         , keyNumber = !isNaN ( k )
                         , IGNORE = Symbol ( 'ignore___' )
                         ;
+                        
                     if ( type !== 'simple' && objectCallback ) {
-                                        item = objectCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`, IGNORE })
+                                        item = objectCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`, IGNORE }, ...args )
                                         if ( item === IGNORE )   return
                                         type = findType ( item )
                         }
@@ -29,7 +31,7 @@ function copyObject ( resource, result, extend, cb, breadcrumbs ) {
                                             result[k] = item
                                             return
                                         }
-                                    let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`, IGNORE });
+                                    let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: `${breadcrumbs}/${k}`, IGNORE }, ...args );
                                     if ( keyRes === IGNORE )   return
                                     const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
                                     if ( canInsert )  result.push ( keyRes ) // It's an array
@@ -39,21 +41,21 @@ function copyObject ( resource, result, extend, cb, breadcrumbs ) {
                             const newObject = {};
                             if ( resultIsArray && keyNumber )   result.push ( newObject )
                             else                                result[k] = newObject
-                            extend.push ( generateList ( item, newObject,  extend, cb, `${breadcrumbs}/${k}` )   )
+                            extend.push ( generateList ( item, newObject,  extend, cb, `${breadcrumbs}/${k}`, args )   )
                        }
                     if ( type === 'array' ) {
                             const newArray = [];
                             if ( resultIsArray && keyNumber )   result.push ( newArray )
                             else                                result[k] = newArray
-                            extend.push ( generateList( item, newArray, extend, cb, `${breadcrumbs}/${k}` )   )
+                            extend.push ( generateList( item, newArray, extend, cb, `${breadcrumbs}/${k}`, args )   )
                         }
             })
 } // copyObject func.
 
 
 
-function* generateList ( data, location, ex, callback, breadcrumbs ) {
-    yield copyObject ( data , location, ex, callback, breadcrumbs )  
+function* generateList ( data, location, ex, callback, breadcrumbs, args ) {
+    yield copyObject ( data , location, ex, callback, breadcrumbs, ...args )  
 } // generateList func.
 
 
