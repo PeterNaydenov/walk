@@ -1,9 +1,7 @@
 "use strict"
 
-import chai from 'chai'
+import { expect } from 'chai'
 import walk from '../src/main.js'
-
-const expect = chai.expect;
 
 
 
