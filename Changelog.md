@@ -1,6 +1,9 @@
 # Release History
 
 
+### 4.2.1 ( 2024-01-02)
+- [x] Development dependencies update;
+
 
 ### 4.2.0 ( 2023-09-23)
 - [x] Provide collection containers to callbacks. Extract data during iteration;
