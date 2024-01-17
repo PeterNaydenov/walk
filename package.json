@@ -15,7 +15,7 @@
   "author": "Peter Naydenov",
   "license": "MIT",
   "devDependencies": {
-    "c8": "^8.0.1",
+    "c8": "^9.1.0",
     "chai": "5.0.0",
     "mocha": "10.2.0"
   },
