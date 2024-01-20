@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "mocha test",
-    "cover": "c8 mocha test"
+    "cover": "c8 mocha test",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -15,9 +16,13 @@
   "author": "Peter Naydenov",
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "c8": "^9.1.0",
     "chai": "5.0.0",
-    "mocha": "10.2.0"
+    "mocha": "10.2.0",
+    "rollup": "^4.9.5"
   },
   "c8": {
     "include": [

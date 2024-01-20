@@ -1,6 +1,12 @@
 # Release History
 
 
+
+### 4.2.2 ( 2024-01-20)
+- [x] Folder 'dist' is not included in npm package. Folder contains all types of the package - CommonJS, ES6, UMD;
+- [x] Build process was added. It's based on "rollup.js";
+
+
 ### 4.2.1 ( 2024-01-02)
 - [x] Development dependencies update;
 
