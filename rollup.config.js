@@ -29,8 +29,8 @@ export default [
 		input: 'src/main.js',
 		external: ['ms'],
 		output: [
-			{ file: 'dist/walk.cjs.js', format: 'cjs' },
-			{ file: 'dist/walk.esm.js', format: 'es' }
+			{ file: 'dist/walk.cjs'    , format: 'cjs' },
+			{ file: 'dist/walk.esm.mjs', format: 'es' }
 		],
 		plugins: [ terser() ]
 	}

@@ -1,6 +1,9 @@
 # Release History
 
 
+### 4.2.3 ( 2024-01-27)
+- [x] Package.json: "exports" section was added. Allows you to use package as commonjs or es6 module without additional configuration;
+
 
 ### 4.2.2 ( 2024-01-20)
 - [x] Folder 'dist' is not included in npm package. Folder contains all types of the package - CommonJS, ES6, UMD;
