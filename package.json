@@ -30,7 +30,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "c8": "^9.1.0",
-    "chai": "5.0.0",
+    "chai": "5.0.3",
     "mocha": "10.2.0",
     "rollup": "^4.9.6"
   },
