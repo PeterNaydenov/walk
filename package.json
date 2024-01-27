@@ -1,21 +1,21 @@
 {
   "name": "@peter.naydenov/walk",
   "description": "Deep copy with fine control during the process. Can be used also as a deep forEach function",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "license": "MIT",
   "author": "Peter Naydenov",
   "main": "./dist/walk.umd.js",
   "type": "module",
   "exports": {
-                  ".": {
-                            "import": "./dist/walk.esm.mjs",
-                            "require": "./dist/walk.cjs",
-                            "default": "./dist/walk.umd.js"
-                        },
-              "./package.json": "./package.json",
-              "./dist/*": "./dist/*",
-              "./src/*": "./src/*"
-          },
+    ".": {
+      "import": "./dist/walk.esm.mjs",
+      "require": "./dist/walk.cjs",
+      "default": "./dist/walk.umd.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*",
+    "./src/*": "./src/*"
+  },
   "scripts": {
     "test": "mocha test",
     "cover": "c8 mocha test",
@@ -25,7 +25,6 @@
     "type": "git",
     "url": "https://github.com/PeterNaydenov/walk.git"
   },
-  
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
