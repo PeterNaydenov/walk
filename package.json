@@ -31,8 +31,8 @@
     "@rollup/plugin-terser": "^0.4.4",
     "c8": "^10.1.2",
     "chai": "5.1.2",
-    "mocha": "10.7.3",
-    "rollup": "^4.24.2"
+    "mocha": "10.8.2",
+    "rollup": "^4.24.4"
   },
   "c8": {
     "include": [
