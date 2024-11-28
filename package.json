@@ -1,7 +1,7 @@
 {
   "name": "@peter.naydenov/walk",
   "description": "Deep copy with fine control during the process. Can be used also as a deep forEach function",
-  "version": "4.2.3",
+  "version": "5.0.0",
   "license": "MIT",
   "author": "Peter Naydenov",
   "main": "./dist/walk.umd.js",
