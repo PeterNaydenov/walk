@@ -1,6 +1,11 @@
 # Release History
 
 
+### 5.0.0 ( 2024-11-28)
+- [x] Object callback will be triggered on 'root' object as well;
+
+
+
 ### 4.2.3 ( 2024-01-27)
 - [x] Package.json: "exports" section was added. Allows you to use package as commonjs or es6 module without additional configuration;
 

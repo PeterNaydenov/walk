@@ -169,9 +169,10 @@ describe ( 'Walk: objectCallback', () => {
                             , { id: 5 }
                         ];
 
-                function oCallbackFn ({ value:o, IGNORE }) {
-                          if ( o.id === 5 )   return o
-                          return IGNORE
+                function oCallbackFn ({ value:o, key, IGNORE }) {
+                                    if ( key === 'root' ) return o
+                                    if ( o.id === 5     ) return o
+                                    return IGNORE
                       }
 
                 let r = walk ({ data : x, objectCallback : oCallbackFn })
@@ -189,8 +190,9 @@ describe ( 'Walk: objectCallback', () => {
                             , [5]
                         ];
 
-                function oCallbackFn ({ value:o, IGNORE }) {
-                          if ( o[0] === 5 )   return o
+                function oCallbackFn ({ value:o, key, IGNORE }) {
+                          if ( key === 'root' ) return o
+                          if ( o[0] === 5     ) return o
                           return IGNORE
                       }
 
@@ -198,6 +200,7 @@ describe ( 'Walk: objectCallback', () => {
                 expect ( r.length ).to.be.equal ( 1 )
       }) // it Prevent array empty items 2
 
+      
 
     it ( 'Set a value to NULL', () => {
                  let 
@@ -220,6 +223,8 @@ describe ( 'Walk: objectCallback', () => {
                   let r = walk ({ data:x, objectCallback:objToNull })
                   expect ( r.props ).to.be.equal ( null )
       }) // it Set a value to NULL
+
+
 
     it ( 'Set a value to undefined', () => {
                  let 
@@ -244,6 +249,38 @@ describe ( 'Walk: objectCallback', () => {
       }) // it Set a value to undefined
 
 
+
+
+    it ( 'Object callback on root object', () => {
+      // Trigger a object callback on root object. 
+      // Modify some root object properties from object callback
+                  let 
+                      x = {
+                                ls   : [ 1,2,3 ]
+                              , name : 'Peter'
+                              , age : 50
+                              , props : {
+                                            eyeColor: 'blue'
+                                          , age     : 47
+                                          , height  : 176
+                                          , sizes : [12,33,12,21]
+                                      }
+                              };
+
+                  function oCallbackFn ({ value:o, key:k, breadcrumbs, IGNORE }) {
+                            if ( k === 'root' ) { 
+                                    o.name = 'John'
+                                    o.age = 30
+                              }
+                            return o   
+                        }
+
+                  let r = walk ({ data : x, objectCallback: oCallbackFn })
+                  
+                  expect ( r ).to.have.property ( 'name' )
+                  expect ( r.name ).to.be.equal ( 'John' )
+                  expect ( r.age ).to.be.equal ( 30 )
+      }) // it Object callback on root object
       
 }) // describe
 

@@ -1,6 +1,29 @@
 # Migration Guides
 
 
+
+## From v.4.x.x - v.5.x.x
+Walk version 5 has change in object callbacks. Will be triggered on 'root' instance as well. If you want to make old object callbacks to work single row can do this for you:
+
+```js
+// version 4
+function oCallbackFn ({ value:o, key, IGNORE }) {
+                          if ( o[0] === 5     ) return o
+                          return IGNORE
+                      }
+
+// version 5
+function oCallbackFn ({ value:o, key, IGNORE }) {
+                          if ( key === 'root' ) return o // Extra line of code for version 5
+                          if ( o[0] === 5     ) return o
+                          return IGNORE
+                      }
+```
+Everything else works the same.
+
+
+
+
 ## From v.3.x.x - v.4.x.x
 Walk version 4 provides support for all javascript primitive types including `null` and `undefined`.
 Untill version 3, callback returns `null` if value should be **ignored**. Walk v.4 provides argument constant `IGNORE`. Return it if need to ignore. Returning of `null` and `undefined` will be treated as standard values. 

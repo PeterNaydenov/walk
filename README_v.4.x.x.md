@@ -1,4 +1,4 @@
-# Walk (@peter.naydenov/walk) ( Version 5.x.x )
+# Walk (@peter.naydenov/walk) ( Version 4.x.x )
 
 ![version](https://img.shields.io/github/package-json/v/peterNaydenov/walk)
 ![license](https://img.shields.io/github/license/peterNaydenov/walk)
@@ -24,7 +24,27 @@ const result = walk ({
 // - if callbacks are resolved with "value" without modification
 ```
 
+Version 4 is coming with support for all primitive types including `null` and `undefined`. For simplify your migration effort here are the instructions:
+- [Migration guides](https://github.com/PeterNaydenov/walk/blob/master/Migration.guide.md)
 
+If you still using older versions of the library - find here the documentation:
+- [Documentation for walk v.3.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.3.x.x.md)
+- [Documentation for walk v.2.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.2.x.x.md)
+
+
+Data structure values must be one of the following data types:
+ - string;
+ - number;
+ - bigint;
+ - boolean;
+ - symbol;
+ - null;
+ - undefined;
+ - array;
+ - object(data only);
+ - function;
+
+ Other data types can compromise the results;
 
 
 
@@ -48,7 +68,7 @@ let result = walk ({ data, keyCallback: keyCallbackFn });  // It's the short way
 
 ## objectCallback
 
-Optional callback function that is started on each object property including 'root'. Function should return object or will be ignored in copy process.
+Optional callback function that is started on each object property. Function should return object or will be ignored in copy process.
 
 ```js
 function objectCallbackFn ({ value, key, breadcrumbs, IGNORE }) {
@@ -82,6 +102,12 @@ Once it has been installed, it can be used by writing this line of JavaScript:
 ```js
 import walk from '@peter.naydenov/walk'
 ```
+
+Versions of `walk` after v.3.1.x are buided as ES module, so don't forget to add `type="module"`. 
+
+        Note:
+        Library is using 'generator functions'. If support for old browsers 
+        is required, add a polyfill for 'generators'.
 
 
 
@@ -180,7 +206,6 @@ let x = {
     };
 
 function objectCallback ({ value:obj, key, breadcrumbs }) {
-    if ( key === 'root' ) return obj   // Add this row to ignore 'root' object
     const {age, height} = obj;
     if ( age && age > 30 ) {
             return { age, height }
@@ -210,10 +235,6 @@ These limitations are covered in a bit larger library - [walk-async](https://git
 ## Links
 - [Release history](Changelog.md)
 - [ Walk-async library](https://github.com/PeterNaydenov/walk-async)
-- [ Documentation version 4.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.4.x.x.md)
-- [ Migration guide ](https://github.com/PeterNaydenov/walk/blob/master/Migration.guide.md)
-
-
 
 ## Credits
 '@peter.naydenov/walk' was created and supported by Peter Naydenov.

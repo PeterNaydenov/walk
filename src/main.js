@@ -1,7 +1,7 @@
 "use strict"
 
 /**
- *     walk
+ *     Walk
  * 
  *     Alternative of deep-copy that provides much better control during creation of immutable 
  *     copies of javascript data structures. 
@@ -13,6 +13,7 @@
  *        - Published on GitHub for first time: March 4th, 2022
  *        - Object callback. May 23th, 2022
  *        - Interface changes - Named arguments. September 18th, 2022
+ *        - Version 5. Object callback with 'root' object. November 28th, 2024
  */
 
 
@@ -34,15 +35,16 @@ function walk ({ data:origin, keyCallback, objectCallback },...args) {
     switch ( type ) {
             case 'array'  :
                                 result = []
-                                copyObject ( origin, result, extend, cb, breadcrumbs, ...args )
+                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, ...args )
                                 break
             case 'object' :
                                 result = {}
-                                copyObject ( origin, result, extend, cb, breadcrumbs, ...args )
+                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, ...args )
                                 break
             case 'simple' :
                                 return origin
         } // switch type
+        
     for ( const plus of extend ) {   plus.next() }
     return result
 } // walk func.
