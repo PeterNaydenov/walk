@@ -10,7 +10,6 @@
 
 
 
-
 Creates an immutable copies of javascript data structures(objects, arrays or mixed). Executes callback functions on every object property(object-callback) and every primitive property(key-callback). Callbacks can modify result-object during the walk process. Mask, filter or substitute values during the copy process. 
 
 ```js
