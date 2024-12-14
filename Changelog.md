@@ -1,6 +1,14 @@
 # Release History
 
 
+
+### 5.0.1 ( 2024-12-14)
+- [x] JSDoc definitions added;
+- [x] TypeScript generated .d.ts files;
+- [x] Some changes in package.json related to build process;
+
+
+
 ### 5.0.0 ( 2024-11-28)
 - [x] Object callback will be triggered on 'root' object as well;
 
