@@ -2,6 +2,11 @@
 
 
 
+### 5.0.2 ( 2024-10-11)
+- [x] Dev dependencies update
+
+
+
 ### 5.0.1 ( 2024-12-14)
 - [x] JSDoc definitions added;
 - [x] TypeScript generated .d.ts files;
