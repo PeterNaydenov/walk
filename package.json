@@ -55,5 +55,8 @@
       "text-summary"
     ]
   },
-  "browserslist": "> 2%, not dead"
+  "browserslist": "> 2%, not dead",
+  "allowScripts": {
+    "fsevents@2.3.3": true
+  }
 }
