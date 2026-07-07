@@ -2,6 +2,11 @@
 
 
 
+### 5.0.3 ( 2026-07-07)
+- [x] Fix: Top-level property named 'root' was flattened into the result or dropped;
+
+
+
 ### 5.0.2 ( 2024-10-11)
 - [x] Dev dependencies update
 
