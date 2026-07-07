@@ -2,6 +2,12 @@
 
 
 
+### 5.0.5 ( 2026-07-07)
+- [x] Fix: 'objectCallback' replacing the root object with a primitive value was crashing on null/undefined or producing broken results;
+- [x] Fix: Own '__proto__' property was replacing the prototype of the copy instead of being copied as a regular property;
+
+
+
 ### 5.0.4 ( 2026-07-07)
 - [x] Fix: Array indexes were not rebuilt for primitive items when 'objectCallback' removes items and no 'keyCallback' is provided;
 
