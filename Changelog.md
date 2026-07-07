@@ -2,6 +2,11 @@
 
 
 
+### 5.0.4 ( 2026-07-07)
+- [x] Fix: Array indexes were not rebuilt for primitive items when 'objectCallback' removes items and no 'keyCallback' is provided;
+
+
+
 ### 5.0.3 ( 2026-07-07)
 - [x] Fix: Top-level property named 'root' was flattened into the result or dropped;
 
