@@ -121,6 +121,19 @@ describe ( 'Walk: Deep copy', () => {
 
 
 
+    it ( 'Own "__proto__" property - no prototype injection', () => {
+              const data = JSON.parse ( '{"__proto__": {"polluted": true}, "a": 1}' );   // own '__proto__' key, as delivered by untrusted JSON
+
+              const r = walk ({ data });
+              expect ( Object.getPrototypeOf ( r ) ).to.be.equal ( Object.prototype )   // prototype must stay untouched
+              expect ( r.polluted ).to.be.equal ( undefined )                           // nothing injected via inheritance
+              expect ( r.a ).to.be.equal ( 1 )
+              expect ( Object.prototype.hasOwnProperty.call ( r, '__proto__' ) ).to.be.true   // copied as an own property
+              expect ( Object.getOwnPropertyDescriptor ( r, '__proto__' ).value ).to.deep.equal ({ polluted: true })
+      }) // it Own "__proto__" property - no prototype injection
+
+
+
     it ( 'Sparse array input - indexes are rebuilt', () => {
               const data = [ 1, , 3 ];   // eslint-disable-line no-sparse-arrays
 

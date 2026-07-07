@@ -298,12 +298,54 @@ describe ( 'Walk: objectCallback', () => {
                         }
 
                   let r = walk ({ data : x, objectCallback: oCallbackFn })
-                  
+
                   expect ( r ).to.have.property ( 'name' )
                   expect ( r.name ).to.be.equal ( 'John' )
                   expect ( r.age ).to.be.equal ( 30 )
       }) // it Object callback on root object
-      
+
+
+
+    it ( 'Object callback replaces root with a string', () => {
+                  let x = { a: 1 };
+
+                  function oCallbackFn ({ value:o, key:k }) {
+                            if ( k === 'root' )   return 'list'
+                            return o
+                        }
+
+                  let r = walk ({ data : x, objectCallback: oCallbackFn })
+                  expect ( r ).to.be.equal ( 'list' )
+      }) // it Object callback replaces root with a string
+
+
+
+    it ( 'Object callback replaces root with null', () => {
+                  let x = { a: 1 };
+
+                  function oCallbackFn ({ value:o, key:k }) {
+                            if ( k === 'root' )   return null
+                            return o
+                        }
+
+                  let r = walk ({ data : x, objectCallback: oCallbackFn })
+                  expect ( r ).to.be.equal ( null )
+      }) // it Object callback replaces root with null
+
+
+
+    it ( 'Object callback ignores root', () => {
+                  let x = { a: 1 };
+
+                  function oCallbackFn ({ value:o, key:k, IGNORE }) {
+                            if ( k === 'root' )   return IGNORE
+                            return o
+                        }
+
+                  let r = walk ({ data : x, objectCallback: oCallbackFn })
+                  expect ( r ).to.deep.equal ({})
+      }) // it Object callback ignores root
+
 }) // describe
 
 
