@@ -64,11 +64,11 @@ function walk (options,...args) {
     switch ( type ) {
             case 'array'  :
                                 result = []
-                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, ...args )
+                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, true, ...args )
                                 break
             case 'object' :
                                 result = {}
-                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, ...args )
+                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, true, ...args )
                                 break
             case 'simple' :
                                 return origin

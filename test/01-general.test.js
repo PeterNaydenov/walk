@@ -114,11 +114,59 @@ describe ( 'Walk: Deep copy', () => {
                             name : 'Peter'
                           , func : () => 12
                       };
-                      
+
               const r = walk ({ data });
               expect ( r.func() ).to.be.equal ( 12 )
       }) // it Functions type - copy by reference
-      
+
+
+
+    it ( 'Property named "root" with object value', () => {
+              const data = {
+                            root : { a: 1 }
+                          , b    : 2
+                      };
+
+              const r = walk ({ data });
+              expect ( r ).to.have.property ( 'root' )
+              expect ( r.root ).to.deep.equal ({ a: 1 })
+              expect ( r ).to.not.have.property ( 'a' )   // must not be flattened into the parent
+              expect ( r.b ).to.be.equal ( 2 )
+      }) // it Property named "root" with object value
+
+
+
+    it ( 'Property named "root" with primitive value', () => {
+              const data = {
+                            root : 5
+                          , b    : 2
+                      };
+
+              const r = walk ({ data });
+              expect ( r ).to.have.property ( 'root' )
+              expect ( r.root ).to.be.equal ( 5 )
+              expect ( r.b ).to.be.equal ( 2 )
+      }) // it Property named "root" with primitive value
+
+
+
+    it ( 'Property named "root" - breadcrumbs are correct', () => {
+              const data = {
+                            root : { a: 1 }
+                      };
+              const visited = [];
+
+              function oCallbackFn ({ value, breadcrumbs }) {
+                        visited.push ( breadcrumbs )
+                        return value
+                  }
+
+              const r = walk ({ data, objectCallback: oCallbackFn });
+              expect ( visited ).to.include ( 'root' )        // the real root object
+              expect ( visited ).to.include ( 'root/root' )   // the property named 'root'
+              expect ( r.root ).to.deep.equal ({ a: 1 })
+      }) // it Property named "root" - breadcrumbs are correct
+
 }) // describe
 
 

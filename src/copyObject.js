@@ -5,7 +5,10 @@ import validateForInsertion from "./validateForInsertion.js";
 
 
 
-function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
+// 'isWrapper' is true only for the call from 'walk' where 'resource' is the
+// synthetic {root:origin} wrapper. Detecting the wrapper by its position in the
+// call chain (instead of by key name) keeps data keys named 'root' safe.
+function copyObject ( resource, result, extend, cb, breadcrumbs, isWrapper, ...args ) {
     let 
           [ keyCallback, objectCallback ] = cb
         , keys = Object.keys ( resource )
@@ -18,7 +21,7 @@ function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
                         , resultIsArray = (findType (result) === 'array') 
                         , keyNumber = !isNaN ( k )
                         , IGNORE = Symbol ( 'ignore___' )
-                        , isRoot = (breadcrumbs === 'root' && k === 'root' )
+                        , isRoot = isWrapper   // The wrapper has exactly one key: 'root'
                         , br = isRoot ? 'root' : `${breadcrumbs}/${k}`
                         ;
         
@@ -64,7 +67,7 @@ function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
 
 
 function* generateList ( data, location, ex, callback, breadcrumbs, args ) {
-    yield copyObject ( data , location, ex, callback, breadcrumbs, ...args )  
+    yield copyObject ( data , location, ex, callback, breadcrumbs, false, ...args )
 } // generateList func.
 
 
