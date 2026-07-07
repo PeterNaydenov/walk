@@ -2,65 +2,57 @@
 
 import findType from "./findType.js";
 import validateForInsertion from "./validateForInsertion.js";
+import setKey from "./setKey.js";
 
 
 
-// 'isWrapper' is true only for the call from 'walk' where 'resource' is the
-// synthetic {root:origin} wrapper. Detecting the wrapper by its position in the
-// call chain (instead of by key name) keeps data keys named 'root' safe.
-function copyObject ( resource, result, extend, cb, breadcrumbs, isWrapper, ...args ) {
-    let 
+function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
+    let
           [ keyCallback, objectCallback ] = cb
         , keys = Object.keys ( resource )
         ;
-        
+
     keys.forEach ( k => {
-                    let 
+                    let
                           type = findType(resource[k])
                         , item  = resource[k]
-                        , resultIsArray = (findType (result) === 'array') 
+                        , resultIsArray = (findType (result) === 'array')
                         , keyNumber = !isNaN ( k )
                         , IGNORE = Symbol ( 'ignore___' )
-                        , isRoot = isWrapper   // The wrapper has exactly one key: 'root'
-                        , br = isRoot ? 'root' : `${breadcrumbs}/${k}`
+                        , br = `${breadcrumbs}/${k}`
                         ;
-        
+
                     if ( type !== 'simple' && objectCallback ) {
                                         item = objectCallback ({ value:item, key:k, breadcrumbs: br, IGNORE }, ...args )
                                         if ( item === IGNORE )   return
                                         type = findType ( item )
                         }
 
-                    if ( isRoot ) {  
-                                extend.push ( generateList ( item, result,  extend, cb, br, args )   )
-                                return
-                        }
-                    
                     if ( type === 'simple' ) {
                                     if ( !keyCallback ) {
                                             const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
-                                            if ( canInsert )    result.push ( item )   // It's an array
-                                            else                result[k] = item       // It's an object
+                                            if ( canInsert )    result.push ( item )     // It's an array
+                                            else                setKey ( result, k, item ) // It's an object
                                             return
                                         }
                                     let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: br, IGNORE }, ...args );
                                     if ( keyRes === IGNORE )   return
                                     const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
-                                    if ( canInsert )    result.push ( keyRes ) // It's an array
-                                    else                result [k] = keyRes    // It's an object
+                                    if ( canInsert )    result.push ( keyRes )      // It's an array
+                                    else                setKey ( result, k, keyRes ) // It's an object
                         }
-                        
+
                     if ( type === 'object' ) {
                             const newObject = {};
                             if ( resultIsArray && keyNumber )   result.push ( newObject )
-                            else                                result[k] = newObject
+                            else                                setKey ( result, k, newObject )
                             extend.push ( generateList ( item, newObject,  extend, cb, br, args ) )
                        }
-                       
+
                     if ( type === 'array' ) {
                             const newArray = [];
                             if ( resultIsArray && keyNumber )   result.push ( newArray )
-                            else                                result[k] = newArray
+                            else                                setKey ( result, k, newArray )
                             extend.push ( generateList( item, newArray, extend, cb, br, args ) )
                         }
             })
@@ -69,7 +61,7 @@ function copyObject ( resource, result, extend, cb, breadcrumbs, isWrapper, ...a
 
 
 function* generateList ( data, location, ex, callback, breadcrumbs, args ) {
-    yield copyObject ( data , location, ex, callback, breadcrumbs, false, ...args )
+    yield copyObject ( data , location, ex, callback, breadcrumbs, ...args )
 } // generateList func.
 
 

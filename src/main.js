@@ -52,7 +52,7 @@ import copyObject from "./copyObject.js";
  *  // will be executed on the result of objectCallback
  */
 function walk (options,...args) {
-    let 
+    let
           { data:origin, keyCallback, objectCallback } = options
         , type = findType ( origin )
         , result
@@ -61,19 +61,27 @@ function walk (options,...args) {
         , cb = [ keyCallback, objectCallback ]
         ;
 
+    if ( type !== 'simple' && objectCallback ) {   // Root object callback. Executed before the result is allocated, so it can replace the root with anything.
+            const IGNORE = Symbol ( 'ignore___' )
+            const replacement = objectCallback ({ value:origin, key:'root', breadcrumbs, IGNORE }, ...args )
+            if ( replacement === IGNORE )   return ( type === 'array' ) ? [] : {}
+            origin = replacement
+            type = findType ( origin )
+        }
+
     switch ( type ) {
             case 'array'  :
                                 result = []
-                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, true, ...args )
+                                copyObject ( origin, result, extend, cb, breadcrumbs, ...args )
                                 break
             case 'object' :
                                 result = {}
-                                copyObject ( {root:origin}, result, extend, cb, breadcrumbs, true, ...args )
+                                copyObject ( origin, result, extend, cb, breadcrumbs, ...args )
                                 break
             case 'simple' :
                                 return origin
         } // switch type
-        
+
     for ( const plus of extend ) {   plus.next() }
     return result
 } // walk func.
