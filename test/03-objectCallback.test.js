@@ -182,7 +182,7 @@ describe ( 'Walk: objectCallback', () => {
 
 
     it ( 'Prevent array empty items 2', () => {
-                let 
+                let
                     x = [
                               [1]
                             , [2]
@@ -199,6 +199,28 @@ describe ( 'Walk: objectCallback', () => {
                 let r = walk ({ data:x, objectCallback: oCallbackFn })
                 expect ( r.length ).to.be.equal ( 1 )
       }) // it Prevent array empty items 2
+
+
+
+    it ( 'Prevent array empty items 3 - primitives, no keyCallback', () => {
+                let
+                    x = [
+                              { id: 1 }
+                            , 'hello'
+                            , 'world'
+                        ];
+
+                function oCallbackFn ({ value:o, key, IGNORE }) {
+                          if ( key === 'root' )            return o
+                          if ( typeof o === 'object' )     return IGNORE
+                          return o
+                      }
+
+                let r = walk ({ data:x, objectCallback: oCallbackFn })
+                expect ( r.length ).to.be.equal ( 2 )
+                expect ( r ).to.deep.equal ([ 'hello', 'world' ])
+                expect ( 0 in r ).to.be.true   // no holes
+      }) // it Prevent array empty items 3 - primitives, no keyCallback
 
       
 

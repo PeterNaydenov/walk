@@ -121,6 +121,16 @@ describe ( 'Walk: Deep copy', () => {
 
 
 
+    it ( 'Sparse array input - indexes are rebuilt', () => {
+              const data = [ 1, , 3 ];   // eslint-disable-line no-sparse-arrays
+
+              const r = walk ({ data });
+              expect ( r ).to.deep.equal ([ 1, 3 ])
+              expect ( r.length ).to.be.equal ( 2 )
+      }) // it Sparse array input - indexes are rebuilt
+
+
+
     it ( 'Property named "root" with object value', () => {
               const data = {
                             root : { a: 1 }

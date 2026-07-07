@@ -38,7 +38,9 @@ function copyObject ( resource, result, extend, cb, breadcrumbs, isWrapper, ...a
                     
                     if ( type === 'simple' ) {
                                     if ( !keyCallback ) {
-                                            if ( !isRoot )   result[k] = item
+                                            const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
+                                            if ( canInsert )    result.push ( item )   // It's an array
+                                            else                result[k] = item       // It's an object
                                             return
                                         }
                                     let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: br, IGNORE }, ...args );
