@@ -1,6 +1,6 @@
 "use strict"
 
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import walk from '../src/main.js'
 
 
@@ -14,38 +14,38 @@ describe ( 'Walk: Deep copy', () => {
                     ;
 
                 x = 64
-                expect ( r ).to.be.equal ( 12 )
-                expect ( r !== x )
+                expect ( r ).toBe ( 12 )
+                expect ( r !== x ).toBe ( true )
         }) // it copy a primitives
 
 
 
     it ( 'Copy array of strings', () => {
-                let 
+                let
                       x = [ 'one', 'two', 'three' ]
                     , r = walk ({ data : x })
                     ;
                 x.push ( 'four' )
-                expect ( r ).to.have.length ( 3 )
+                expect ( r ).toHaveLength ( 3 )
         }) // it copy array of strings
 
 
 
     it ( 'Copy a single level deep object', () => {
-                let 
+                let
                       x = { name:'Peter', age: 47 }
                     , r = walk ({ data:x })
                     , z = x
                     ;
                 x.test = 'hello'
-                expect ( r ).to.not.have.property ( 'test' )
-                expect ( z ).to.have.property ( 'test' )
+                expect ( r ).not.toHaveProperty ( 'test' )
+                expect ( z ).toHaveProperty ( 'test' )
         }) // it copy a single level deep object
 
 
 
     it ( 'Copy a mixed structure', () => {
-                let 
+                let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -58,16 +58,16 @@ describe ( 'Walk: Deep copy', () => {
                             }
                   , r = walk ({ data : x })
                   ;
-                  
+
                 r.props.sizes.push ( 66 )
                 x.props.sizes[0] = 222222
                 x.props.test = 'hello'
 
-                expect ( x.props.sizes ).to.have.length ( 4 )
-                expect ( r.props.sizes ).to.have.length ( 5 )
-                expect ( x.props.sizes[0] !== r.props.sizes[0])
+                expect ( x.props.sizes ).toHaveLength ( 4 )
+                expect ( r.props.sizes ).toHaveLength ( 5 )
+                expect ( x.props.sizes[0] !== r.props.sizes[0]).toBe ( true )
 
-                expect ( r.props ).to.not.have.property ( 'test' )
+                expect ( r.props ).not.toHaveProperty ( 'test' )
         }) // it Copy a mixed structure
 
 
@@ -77,22 +77,22 @@ describe ( 'Walk: Deep copy', () => {
               data = { name : null }
             , r = walk ({data})
             ;
-          expect ( r ).to.have.property ( 'name' )
-          expect ( r.name ).to.be.equal ( null )
+          expect ( r ).toHaveProperty ( 'name' )
+          expect ( r.name ).toBe ( null )
     }) // it Data property has value null
 
 
 
     it ( 'Data property has "boolean" value', () => {
         const data = {   // Booleans
-                      happy : true  
+                      happy : true
                     , sad   : false
                 };
         const r = walk ({ data });
-        expect ( r ).to.have.property ( 'happy' )
-        expect ( r.happy ).to.be.true
-        expect ( r ).to.have.property ( 'sad' )
-        expect ( r.sad ).to.be.false
+        expect ( r ).toHaveProperty ( 'happy' )
+        expect ( r.happy ).toBe ( true )
+        expect ( r ).toHaveProperty ( 'sad' )
+        expect ( r.sad ).toBe ( false )
     }) // it Data property has "boolean" value
 
 
@@ -104,7 +104,7 @@ describe ( 'Walk: Deep copy', () => {
                   };
           const r = walk ({ data });
           r.pretendHTML.something = 'hello'
-          expect ( data.pretendHTML.something ).to.be.equal ( 'hello' )   // Recognize html nodes and keep them as a reference
+          expect ( data.pretendHTML.something ).toBe ( 'hello' )   // Recognize html nodes and keep them as a reference
       }) // html nodes - copy by reference
 
 
@@ -116,7 +116,7 @@ describe ( 'Walk: Deep copy', () => {
                       };
 
               const r = walk ({ data });
-              expect ( r.func() ).to.be.equal ( 12 )
+              expect ( r.func() ).toBe ( 12 )
       }) // it Functions type - copy by reference
 
 
@@ -125,11 +125,11 @@ describe ( 'Walk: Deep copy', () => {
               const data = JSON.parse ( '{"__proto__": {"polluted": true}, "a": 1}' );   // own '__proto__' key, as delivered by untrusted JSON
 
               const r = walk ({ data });
-              expect ( Object.getPrototypeOf ( r ) ).to.be.equal ( Object.prototype )   // prototype must stay untouched
-              expect ( r.polluted ).to.be.equal ( undefined )                           // nothing injected via inheritance
-              expect ( r.a ).to.be.equal ( 1 )
-              expect ( Object.prototype.hasOwnProperty.call ( r, '__proto__' ) ).to.be.true   // copied as an own property
-              expect ( Object.getOwnPropertyDescriptor ( r, '__proto__' ).value ).to.deep.equal ({ polluted: true })
+              expect ( Object.getPrototypeOf ( r ) ).toBe ( Object.prototype )   // prototype must stay untouched
+              expect ( r.polluted ).toBe ( undefined )                           // nothing injected via inheritance
+              expect ( r.a ).toBe ( 1 )
+              expect ( Object.prototype.hasOwnProperty.call ( r, '__proto__' ) ).toBe ( true )   // copied as an own property
+              expect ( Object.getOwnPropertyDescriptor ( r, '__proto__' ).value ).toEqual ({ polluted: true })
       }) // it Own "__proto__" property - no prototype injection
 
 
@@ -138,8 +138,8 @@ describe ( 'Walk: Deep copy', () => {
               const data = [ 1, , 3 ];   // eslint-disable-line no-sparse-arrays
 
               const r = walk ({ data });
-              expect ( r ).to.deep.equal ([ 1, 3 ])
-              expect ( r.length ).to.be.equal ( 2 )
+              expect ( r ).toEqual ([ 1, 3 ])
+              expect ( r.length ).toBe ( 2 )
       }) // it Sparse array input - indexes are rebuilt
 
 
@@ -151,10 +151,10 @@ describe ( 'Walk: Deep copy', () => {
                       };
 
               const r = walk ({ data });
-              expect ( r ).to.have.property ( 'root' )
-              expect ( r.root ).to.deep.equal ({ a: 1 })
-              expect ( r ).to.not.have.property ( 'a' )   // must not be flattened into the parent
-              expect ( r.b ).to.be.equal ( 2 )
+              expect ( r ).toHaveProperty ( 'root' )
+              expect ( r.root ).toEqual ({ a: 1 })
+              expect ( r ).not.toHaveProperty ( 'a' )   // must not be flattened into the parent
+              expect ( r.b ).toBe ( 2 )
       }) // it Property named "root" with object value
 
 
@@ -166,9 +166,9 @@ describe ( 'Walk: Deep copy', () => {
                       };
 
               const r = walk ({ data });
-              expect ( r ).to.have.property ( 'root' )
-              expect ( r.root ).to.be.equal ( 5 )
-              expect ( r.b ).to.be.equal ( 2 )
+              expect ( r ).toHaveProperty ( 'root' )
+              expect ( r.root ).toBe ( 5 )
+              expect ( r.b ).toBe ( 2 )
       }) // it Property named "root" with primitive value
 
 
@@ -185,11 +185,10 @@ describe ( 'Walk: Deep copy', () => {
                   }
 
               const r = walk ({ data, objectCallback: oCallbackFn });
-              expect ( visited ).to.include ( 'root' )        // the real root object
-              expect ( visited ).to.include ( 'root/root' )   // the property named 'root'
-              expect ( r.root ).to.deep.equal ({ a: 1 })
+              expect ( visited ).toContain ( 'root' )        // the real root object
+              expect ( visited ).toContain ( 'root/root' )   // the property named 'root'
+              expect ( r.root ).toEqual ({ a: 1 })
       }) // it Property named "root" - breadcrumbs are correct
 
 }) // describe
-
 

@@ -1,6 +1,6 @@
 "use strict"
 
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import walk from '../src/main.js'
 
 
@@ -8,7 +8,7 @@ import walk from '../src/main.js'
 describe ( 'Walk: objectCallback', () => {
 
       it ( 'Object callback function only', () => {
-                let 
+                let
                       x = {
                                 ls   : [ 1,2,3 ]
                               , name : 'Peter'
@@ -27,14 +27,14 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data:x, objectCallback:oCallbackFn })
-                expect ( r.props ).to.not.have.property ( 'age'   )
-                expect ( r.props ).to.not.have.property ( 'sizes' )
-                expect ( r.props.eyeColor ).to.be.equal ( 'dark'  )
+                expect ( r.props ).not.toHaveProperty ( 'age'   )
+                expect ( r.props ).not.toHaveProperty ( 'sizes' )
+                expect ( r.props.eyeColor ).toBe ( 'dark'  )
       }) // it object callback
 
 
       it ( 'Object callback returns null', () => {
-                let 
+                let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -53,13 +53,13 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data : x, objectCallback: oCallbackFn })
-                expect ( r ).to.not.have.property ( 'props' )                
+                expect ( r ).not.toHaveProperty ( 'props' )
       }) // it object callback null
 
 
 
     it ( 'Object callback returns a string', () => {
-                let 
+                let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -78,14 +78,14 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data : x, objectCallback : oCallbackFn })
-                expect ( r ).to.have.property ( 'props' )
-                expect ( r.props ).to.be.equal ( 'list' )
+                expect ( r ).toHaveProperty ( 'props' )
+                expect ( r.props ).toBe ( 'list' )
       }) // it object callback null
 
 
 
     it ( 'Object callback changes the data', () => {
-                let 
+                let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -104,16 +104,16 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data:x, objectCallback:oCallbackFn })
-                expect ( r ).to.have.property ( 'props' )
-                expect ( r.props ).to.have.property ( 'sizes' )
-                expect ( r.props.sizes ).to.have.length ( 1 )
-                expect ( r.props.sizes[0]).to.be.equal ( 'list' )
+                expect ( r ).toHaveProperty ( 'props' )
+                expect ( r.props ).toHaveProperty ( 'sizes' )
+                expect ( r.props.sizes ).toHaveLength ( 1 )
+                expect ( r.props.sizes[0]).toBe ( 'list' )
       }) // it object callback changes the data
 
 
 
     it ( 'Object callback checks key', () => {
-                let 
+                let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -131,13 +131,13 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data : x, objectCallback: oCallbackFn })
-                expect ( r ).to.not.have.property ( 'props' )                
+                expect ( r ).not.toHaveProperty ( 'props' )
       }) // it Object callback checks key
 
 
 
     it ( 'Object callback checks breadcrumbs', () => {
-                let 
+                let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -155,13 +155,13 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data:x, objectCallback:oCallbackFn })
-                expect ( r ).to.not.have.property ( 'props' )
+                expect ( r ).not.toHaveProperty ( 'props' )
       }) // it Object callback checks breadcrumbs
 
 
 
     it ( 'Prevent array empty items', () => {
-                let 
+                let
                     x = [
                               { id: 1 }
                             , { id: 2 }
@@ -176,7 +176,7 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data : x, objectCallback : oCallbackFn })
-                expect ( r.length ).to.be.equal ( 1 )
+                expect ( r.length ).toBe ( 1 )
       }) // it Prevent array empty items
 
 
@@ -197,7 +197,7 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data:x, objectCallback: oCallbackFn })
-                expect ( r.length ).to.be.equal ( 1 )
+                expect ( r.length ).toBe ( 1 )
       }) // it Prevent array empty items 2
 
 
@@ -217,15 +217,15 @@ describe ( 'Walk: objectCallback', () => {
                       }
 
                 let r = walk ({ data:x, objectCallback: oCallbackFn })
-                expect ( r.length ).to.be.equal ( 2 )
-                expect ( r ).to.deep.equal ([ 'hello', 'world' ])
-                expect ( 0 in r ).to.be.true   // no holes
+                expect ( r.length ).toBe ( 2 )
+                expect ( r ).toEqual ([ 'hello', 'world' ])
+                expect ( 0 in r ).toBe ( true )   // no holes
       }) // it Prevent array empty items 3 - primitives, no keyCallback
 
-      
+
 
     it ( 'Set a value to NULL', () => {
-                 let 
+                 let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -236,20 +236,20 @@ describe ( 'Walk: objectCallback', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             };
-                  
+
                   function objToNull ({value,key }) {
                             if ( key === 'props' )   return null
                             return value
                       } // objToNull func.
 
                   let r = walk ({ data:x, objectCallback:objToNull })
-                  expect ( r.props ).to.be.equal ( null )
+                  expect ( r.props ).toBe ( null )
       }) // it Set a value to NULL
 
 
 
     it ( 'Set a value to undefined', () => {
-                 let 
+                 let
                     x = {
                               ls   : [ 1,2,3 ]
                             , name : 'Peter'
@@ -260,23 +260,23 @@ describe ( 'Walk: objectCallback', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             };
-                  
+
                   function objToNull ({value,key }) {
                             if ( key === 'props' )   return undefined
                             return value
                       } // objToNull func.
 
                   let r = walk ({ data:x, objectCallback:objToNull })
-                  expect ( r.props ).to.be.equal ( undefined )
+                  expect ( r.props ).toBe ( undefined )
       }) // it Set a value to undefined
 
 
 
 
     it ( 'Object callback on root object', () => {
-      // Trigger a object callback on root object. 
+      // Trigger a object callback on root object.
       // Modify some root object properties from object callback
-                  let 
+                  let
                       x = {
                                 ls   : [ 1,2,3 ]
                               , name : 'Peter'
@@ -290,18 +290,18 @@ describe ( 'Walk: objectCallback', () => {
                               };
 
                   function oCallbackFn ({ value:o, key:k, breadcrumbs, IGNORE }) {
-                            if ( k === 'root' ) { 
+                            if ( k === 'root' ) {
                                     o.name = 'John'
                                     o.age = 30
                               }
-                            return o   
+                            return o
                         }
 
                   let r = walk ({ data : x, objectCallback: oCallbackFn })
 
-                  expect ( r ).to.have.property ( 'name' )
-                  expect ( r.name ).to.be.equal ( 'John' )
-                  expect ( r.age ).to.be.equal ( 30 )
+                  expect ( r ).toHaveProperty ( 'name' )
+                  expect ( r.name ).toBe ( 'John' )
+                  expect ( r.age ).toBe ( 30 )
       }) // it Object callback on root object
 
 
@@ -315,7 +315,7 @@ describe ( 'Walk: objectCallback', () => {
                         }
 
                   let r = walk ({ data : x, objectCallback: oCallbackFn })
-                  expect ( r ).to.be.equal ( 'list' )
+                  expect ( r ).toBe ( 'list' )
       }) // it Object callback replaces root with a string
 
 
@@ -329,7 +329,7 @@ describe ( 'Walk: objectCallback', () => {
                         }
 
                   let r = walk ({ data : x, objectCallback: oCallbackFn })
-                  expect ( r ).to.be.equal ( null )
+                  expect ( r ).toBe ( null )
       }) // it Object callback replaces root with null
 
 
@@ -343,9 +343,8 @@ describe ( 'Walk: objectCallback', () => {
                         }
 
                   let r = walk ({ data : x, objectCallback: oCallbackFn })
-                  expect ( r ).to.deep.equal ({})
+                  expect ( r ).toEqual ({})
       }) // it Object callback ignores root
 
 }) // describe
-
 
