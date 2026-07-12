@@ -2,7 +2,7 @@
 
 
 
-### 5.0.6 ( 2026-07-07)
+### 5.0.6 ( 2026-07-12)
 - [x] Upgrading of typescript to v7.x.x;
 - [x] Moving from mocha testing library to vitest;
 - [x] Package.json: Overwrite section was removed(no need after removing mocha);
