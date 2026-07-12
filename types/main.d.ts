@@ -1,4 +1,3 @@
-export default walk;
 export type Options = {
     /**
      * - Required. Any JS data structure that will be copied.
@@ -7,11 +6,11 @@ export type Options = {
     /**
      * - Optional. Function executed on each primitive property.
      */
-    keyCallback?: Function | undefined;
+    keyCallback?: Function;
     /**
      * - Optional. Function executed on each object property.
      */
-    objectCallback?: Function | undefined;
+    objectCallback?: Function;
 };
 /**
  *  @typedef {object} Options
@@ -41,4 +40,5 @@ export type Options = {
  *  // will be executed on the result of objectCallback
  */
 declare function walk(options: Options, ...args: any[]): any;
+export default walk;
 //# sourceMappingURL=main.d.ts.map
