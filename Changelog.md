@@ -2,6 +2,11 @@
 
 
 
+### 5.0.7 ( 2026-07-19)
+- [x] Fix: built-in object types whose data lives outside the own-enumerable-string-key model (`Date`, `RegExp`, `Map`, `Set`, `WeakMap`, `WeakSet`, `ArrayBuffer`, `DataView`, and all `TypedArray` subclasses) used to be classified as a plain `object` by `findType` and ended up as an empty `{}` in the result. They are now classified as `simple` and preserved by reference, matching the contract already used for `function` values and DOM nodes. Note: this changes the observable shape of the result when a property holds one of these types — the value is now the same reference as the input, not a plain-object copy;
+
+
+
 ### 5.0.6 ( 2026-07-12)
 - [x] Upgrading of typescript to v7.x.x;
 - [x] Moving from mocha testing library to vitest;
