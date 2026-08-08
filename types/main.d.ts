@@ -54,8 +54,10 @@ export type Options = {
  *  symbol, null, undefined, function, Date, RegExp, Map, Set, WeakMap,
  *  WeakSet, ArrayBuffer, DataView, typed arrays, DOM nodes).
  *
- *  Return the new value to store, or `IGNORE` to drop the key. Whatever
- *  you return is stored as-is; walk does not descend into it.
+ *  Return the new value to store, or `IGNORE` to drop the key:
+ *    - return a primitive (or a built-in like `Date`/`Map`/`Set`) → stored as-is by reference;
+ *    - return a plain object or array → walk continues into it with the other callback applied to its children;
+ *    - return `IGNORE` → that key is dropped from the result.
  *
  *  @callback KeyCallback
  *  @param {CallbackArgs} args
