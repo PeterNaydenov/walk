@@ -2,6 +2,14 @@
 
 
 
+### 6.0.0 (2026-08-08)
+- [x] Behavior: `keyCallback` now re-types the value it returns. Returning a plain object or array triggers a nested walk into the new structure via the existing `extend` mechanism — the same as if it had been in the original input. Built-in types (`Date`, `Map`, `Set`, typed arrays, DOM nodes, functions) remain `'simple'` and are still passed by reference, with no descent. Order of execution within a level is preserved because the new walk is deferred;
+- [x] Docs: Update the `keyCallback` section in the README to enumerate the three return-value outcomes (primitive / built-in, plain object or array, `IGNORE`) — symmetric with the `objectCallback` section;
+- [x] Docs: Replace the `"keyCallback can return only primitives"` line in the Limitations list with the more accurate contract about built-in types being passed by reference;
+- [x] Tests: Add 9 tests in `test/02-keyCallback.test.js` covering plain-object return, array return, `Date` / `Map` passed by reference, `IGNORE` unchanged, order preservation, primitive leaf, and full nested walk with arrays;
+
+
+
 ### 5.0.8 (2026-08-08)
 - [x] Types: Tighten callback signatures in `types/main.d.ts`. `keyCallback` and `objectCallback` are now typed as `KeyCallback` / `ObjectCallback` over a `CallbackArgs` shape (`value`, `key`, `breadcrumbs`, `IGNORE`); `IGNORE` is exported as a branded `IgnoreToken = symbol` so TypeScript users get autocomplete and can return it from a callback. Driven from JSDoc in `src/main.js`; regenerate with `npm run build`;
 - [x] Docs: Reframe the lead paragraph so the deep copy reads as a side-effect and the callback-driven modifications as the headline;
