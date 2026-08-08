@@ -46,7 +46,13 @@ A few invariants to keep in mind — they shape the order in which your callback
 
 
 ## keyCallback
-`walk` visits each member of the data once. `keyCallback` fires on every primitive property — types: *string, number, bigint, boolean, symbol, null, undefined, function*. Object and array values are visited by `objectCallback` instead (see below).
+`walk` visits each member of the data once. `keyCallback` fires on every primitive property — types: *string, number, bigint, boolean, symbol, null, undefined, function*. Object and array values are visited by `objectCallback` instead (see below). Built-in types like `Date`, `Map`, `Set`, and typed arrays arrive at `keyCallback` as primitives and are passed through by reference — see [Built-in types](#built-in-types-date-regexp-map-set-typed-arrays-etc) below.
+
+The value you return from the callback becomes the new value at that key:
+
+- **Return a primitive (or a built-in like `Date` / `Map` / `Set`)** → stored as-is. Walk does not descend into it;
+- **Return a plain object or array** → walk continues into it with `objectCallback` and `keyCallback` applied to its children (same as any original nested object/array). The new walk is deferred via the `extend` mechanism, so the iteration order of the current level is preserved;
+- **Return the `IGNORE` constant** → that key is dropped from the result.
 
 ```js
 function keyCallbackFn ({value,key,breadcrumbs, IGNORE }) {
@@ -304,7 +310,7 @@ let result = walk ({ data:x, objectCallback })
 ```
 
 ## Limitations
-- `walk` keyCallback can return only primitives;
+- `walk` does not descend into built-in types (`Date`, `RegExp`, `Map`, `Set`, `WeakMap`, `WeakSet`, `ArrayBuffer`, `DataView`, typed arrays, DOM nodes, functions) — they are passed by reference, whether they appear in the input or are returned by a callback;
 - `walk` can not execute another `walk` from inside of the callbacks;
 - It's not recomended to use any async operations in the callbacks. Could compromise the result without any warning;
 
