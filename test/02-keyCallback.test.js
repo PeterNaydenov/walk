@@ -191,5 +191,155 @@ describe ( 'Walk: keyCallback', () => {
 
 
 
+    // -------------------------------------------------------------------------
+    // keyCallback returning a plain object/array:
+    // The returned value is re-typed and, if it's a plain object or array, walk
+    // continues into it with the other callback. Built-in types (Date, Map,
+    // Set, typed arrays, etc.) are still 'simple' and are stored by reference
+    // with no descent.
+    // -------------------------------------------------------------------------
+
+    it ( 'keyCallback returning a plain object is walked into (keyCallback fires on its primitives)', () => {
+                const x = { name: 'Peter', age: 47 }
+                const seen = []
+                const r = walk ({
+                          data: x
+                        , keyCallback: ({ value, key }) => {
+                                              seen.push ( `${key}=${value}` )
+                                              if ( key === 'name' )   return { wrapped: { inner: 'newValue' } }
+                                              return value
+                                          }
+                    })
+                expect ( r.name ).not.toBe ( 'Peter' )
+                expect ( r.name.wrapped.inner ).toBe ( 'newValue' )   // walked into
+                expect ( seen ).toContain ( 'inner=newValue' )          // keyCallback fired on the new structure
+      }) // it keyCallback returning a plain object
+
+
+    it ( 'keyCallback returning a plain object fires objectCallback on the new structure', () => {
+                const x = { name: 'Peter' }
+                const objCbKeys = []
+                walk ({
+                          data: x
+                        , objectCallback: ({ value, key }) => {
+                                              if ( key !== 'root' )   objCbKeys.push ( key )
+                                              return value            // pass-through
+                                          }
+                        , keyCallback: ({ key, value }) => {
+                                              if ( key === 'name' )   return { wrapped: { inner: 'x' } }
+                                              return value
+                                          }
+                    })
+                // The substituted structure was walked: objectCallback fired for its object key 'wrapped'
+                expect ( objCbKeys ).toContain ( 'wrapped' )
+      }) // it keyCallback returning object + objectCallback
+
+
+    it ( 'keyCallback returning an array is walked into', () => {
+                const x = { items: 'placeholder' }
+                const r = walk ({
+                          data: x
+                        , keyCallback: ({ key, value }) => key === 'items' ? [ 1, 2, 3 ] : value
+                    })
+                expect ( Array.isArray ( r.items ) ).toBe ( true )
+                expect ( r.items ).toEqual ( [ 1, 2, 3 ] )
+      }) // it keyCallback returning an array
+
+
+    it ( 'keyCallback returning a built-in (Date) is passed by reference, not walked', () => {
+                const d = new Date ( '2024-01-15' )
+                const x = { when: 'placeholder' }
+                let objectCbDescents = 0
+                const r = walk ({
+                          data: x
+                        , objectCallback: ({ value, key }) => {
+                                              if ( key === 'when' )   objectCbDescents++
+                                              return value
+                                          }
+                        , keyCallback: ({ key, value }) => key === 'when' ? d : value
+                    })
+                expect ( r.when ).toBe ( d )             // same reference, not a copy
+                expect ( objectCbDescents ).toBe ( 0 )   // objectCallback never fired on the Date
+      }) // it keyCallback returning a Date
+
+
+    it ( 'keyCallback returning a Map is passed by reference, not walked', () => {
+                const m = new Map ([ [ 'a', 1 ], [ 'b', 2 ] ])
+                const x = { scores: 'placeholder' }
+                const r = walk ({
+                          data: x
+                        , keyCallback: ({ key, value }) => key === 'scores' ? m : value
+                    })
+                expect ( r.scores ).toBe ( m )                      // same reference
+                expect ( r.scores.get ( 'a' ) ).toBe ( 1 )         // still functional
+                expect ( r.scores.get ( 'b' ) ).toBe ( 2 )
+      }) // it keyCallback returning a Map
+
+
+    it ( 'keyCallback returning IGNORE drops the key (unchanged behavior)', () => {
+                const x = { name: 'Peter', age: 47 }
+                const r = walk ({
+                          data: x
+                        , keyCallback: ({ key, value, IGNORE }) => key === 'age' ? IGNORE : value
+                    })
+                expect ( r.name ).toBe ( 'Peter' )
+                expect ( r ).not.toHaveProperty ( 'age' )
+      }) // it keyCallback returning IGNORE
+
+
+    it ( 'keyCallback substituting an object preserves iteration order of the current level (deferred via extend)', () => {
+                // When keyCallback substitutes an object for one key, the new walk
+                // is deferred via the extend mechanism. The other keys at the same
+                // level are still visited in Object.keys order, and the new
+                // structure's keys are visited after the level completes.
+                const x = { a: 1, b: 'two', c: 3, d: 4 }
+                const visitOrder = []
+                walk ({
+                          data: x
+                        , keyCallback: ({ key, value }) => {
+                                              visitOrder.push ( key )
+                                              if ( key === 'b' )   return { nested: 'object' }
+                                              return value
+                                          }
+                    })
+                // First 4 visits are the level's own keys in Object.keys order
+                expect ( visitOrder.slice ( 0, 4 ) ).toEqual ( [ 'a', 'b', 'c', 'd' ] )
+                // The substituted structure's key is visited after the level
+                expect ( visitOrder ).toContain ( 'nested' )
+                expect ( visitOrder.indexOf ( 'nested' ) ).toBeGreaterThan ( visitOrder.indexOf ( 'd' ) )
+      }) // it order preservation
+
+
+    it ( 'keyCallback returning a primitive still stores it as a leaf (no descent)', () => {
+                const x = { name: 'Peter' }
+                let descents = 0
+                const r = walk ({
+                          data: x
+                        , objectCallback: ({ value, key }) => {
+                                              if ( key === 'name' )   descents++
+                                              return value
+                                          }
+                        , keyCallback: ({ key, value }) => key === 'name' ? 'renamed' : value
+                    })
+                expect ( r.name ).toBe ( 'renamed' )
+                expect ( descents ).toBe ( 0 )   // string is 'simple', no descent
+      }) // it keyCallback returning a primitive
+
+
+    it ( 'keyCallback returning a nested object with arrays is fully walked', () => {
+                const x = { config: 'placeholder' }
+                const r = walk ({
+                          data: x
+                        , keyCallback: ({ key, value }) => key === 'config'
+                                              ? { db: { host: 'localhost', ports: [ 5432, 5433 ] } }
+                                              : value
+                    })
+                expect ( r.config.db.host ).toBe ( 'localhost' )
+                expect ( r.config.db.ports ).toEqual ( [ 5432, 5433 ] )
+                // Walk produced a deep copy, not a reference to the input
+                expect ( r.config ).not.toBe ( x.config )
+      }) // it keyCallback returning a nested object with arrays
+
+
 }) // describe
 
