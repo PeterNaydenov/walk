@@ -37,9 +37,31 @@ function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
                                         }
                                     let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: br, IGNORE }, ...args );
                                     if ( keyRes === IGNORE )   return
-                                    const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
-                                    if ( canInsert )    result.push ( keyRes )      // It's an array
-                                    else                setKey ( result, k, keyRes ) // It's an object
+                                    // Re-type the returned value. A plain object/array returned from
+                                    // keyCallback is walked into via the same extend mechanism used for
+                                    // original nested values; built-in types (Date, Map, Set, etc.) are
+                                    // still 'simple' and stored by reference.
+                                    const newType = findType ( keyRes )
+                                    if ( newType === 'simple' ) {
+                                            const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
+                                            if ( canInsert )    result.push ( keyRes )      // It's an array
+                                            else                setKey ( result, k, keyRes ) // It's an object
+                                            return
+                                        }
+                                    if ( newType === 'object' ) {
+                                            const newObject = {}
+                                            if ( resultIsArray && keyNumber )   result.push ( newObject )
+                                            else                                setKey ( result, k, newObject )
+                                            extend.push ( generateList ( keyRes, newObject, extend, cb, br, args ) )
+                                            return
+                                        }
+                                    if ( newType === 'array' ) {
+                                            const newArray = []
+                                            if ( resultIsArray && keyNumber )   result.push ( newArray )
+                                            else                                setKey ( result, k, newArray )
+                                            extend.push ( generateList ( keyRes, newArray, extend, cb, br, args ) )
+                                            return
+                                        }
                         }
 
                     if ( type === 'object' ) {
