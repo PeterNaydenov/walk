@@ -23,33 +23,79 @@ import copyObject from "./copyObject.js";
 
 
 /**
+ *  Sentinel value passed to callbacks. Return it from a callback to drop
+ *  the current key from the result. A fresh symbol is created on every
+ *  callback call, so always return the value that was handed to you.
+ *
+ *  @typedef {symbol} IgnoreToken
+ */
+
+/**
+ *  Arguments object received by both `keyCallback` and `objectCallback`.
+ *
+ *  @typedef {object} CallbackArgs
+ *  @property {*}          value        - The current value being processed.
+ *  @property {string}     key          - Property key as a string.
+ *  @property {string}     breadcrumbs  - Slash-delimited path to the current key, starting with `root` (e.g. `"root/props/age"`).
+ *  @property {IgnoreToken} IGNORE      - Return this from the callback to drop the current key from the result.
+ */
+
+/**
+ *  Called once per primitive property (string, number, bigint, boolean,
+ *  symbol, null, undefined, function, Date, RegExp, Map, Set, WeakMap,
+ *  WeakSet, ArrayBuffer, DataView, typed arrays, DOM nodes).
+ *
+ *  Return the new value to store, or `IGNORE` to drop the key. Whatever
+ *  you return is stored as-is; walk does not descend into it.
+ *
+ *  @callback KeyCallback
+ *  @param {CallbackArgs} args
+ *  @param {...*}         rest - Any extra arguments passed to `walk()` are forwarded to the callback.
+ *  @returns {*}
+ */
+
+/**
+ *  Called once per object or array property, including the root.
+ *  The returned value becomes the new value at that key:
+ *    - return an object or array → walk continues into it with the other callbacks;
+ *    - return a primitive        → it is stored as the value, no further walking;
+ *    - return `IGNORE`           → the key is dropped from the result.
+ *
+ *  @callback ObjectCallback
+ *  @param {CallbackArgs} args
+ *  @param {...*}         rest
+ *  @returns {*}
+ */
+
+/**
  *  @typedef {object} Options
- *  @property {any} data - Required. Any JS data structure that will be copied.
- *  @property {function} [keyCallback] - Optional. Function executed on each primitive property.
- *  @property {function} [objectCallback] - Optional. Function executed on each object property.
+ *  @property {*}             data           - Required. Any JS data structure that will be copied.
+ *  @property {KeyCallback}    [keyCallback]    - Optional. Executed on each primitive property.
+ *  @property {ObjectCallback} [objectCallback] - Optional. Executed on each object/array property, including the root.
  */
 
 
 /**
  *  Walk
- * 
- *  Creates an immutable copies of deep javascript data structures. 
- *  Executes callback functions on every object/array property(objectCallback) and every primitive property(keyCallback). 
- *  Callbacks can modify result-object by masking, filter or substitute values during the copy process.
- *  
+ *
+ *  Creates an immutable copy of a deep JavaScript data structure.
+ *  Two optional callbacks run during the walk and can mask, filter, or
+ *  substitute values as the result is built.
+ *
  *  @function walk
- *  @param {Options} options   - Required. Object with required 'data' property and two optional callback functions: keyCallback and objectCallback. 
- *  @param {...any} args - Optional. Additional arguments that could be used in the callback functions.
- *  @returns {any} - Created immutable copy of the 'options.data' property.
+ *  @param {Options} options   - Required. Object with required `data` property and two optional callback functions: `keyCallback` and `objectCallback`.
+ *  @param {...*}    args      - Optional. Additional arguments forwarded to both callbacks.
+ *  @returns {*}               - Created immutable copy of `options.data`.
  *  @example
- *  // keyCallbackFn - function executed on each primitive property
- *  // objectCallbackFn - function executed on each object property
- *  let result = walk ({ data:x, keyCallback:keyCallbackFn, objectCallback : objectCallbackFn })
- * 
- * 
- *  // NOTE: objectCallback is executed before keyCallback! 
- *  // If you modify object with objectCallback, then keyCallback 
- *  // will be executed on the result of objectCallback
+ *  let result = walk ({
+ *      data: someData,
+ *      keyCallback:    keyCallbackFn,
+ *      objectCallback: objectCallbackFn
+ *  })
+ *
+ *  // Note: objectCallback is executed before keyCallback.
+ *  // If you modify an object with objectCallback, keyCallback will be
+ *  // executed on the result of objectCallback.
  */
 function walk (options,...args) {
     let
