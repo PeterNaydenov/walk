@@ -1,4 +1,4 @@
-# Walk (@peter.naydenov/walk) ( Version 5.x.x )
+# Walk (@peter.naydenov/walk)
 
 ![version](https://img.shields.io/github/package-json/v/peterNaydenov/walk)
 ![license](https://img.shields.io/github/license/peterNaydenov/walk)
