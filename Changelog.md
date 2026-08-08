@@ -2,6 +2,20 @@
 
 
 
+### 5.0.8 (2026-08-08)
+- [x] Types: Tighten callback signatures in `types/main.d.ts`. `keyCallback` and `objectCallback` are now typed as `KeyCallback` / `ObjectCallback` over a `CallbackArgs` shape (`value`, `key`, `breadcrumbs`, `IGNORE`); `IGNORE` is exported as a branded `IgnoreToken = symbol` so TypeScript users get autocomplete and can return it from a callback. Driven from JSDoc in `src/main.js`; regenerate with `npm run build`;
+- [x] Docs: Reframe the lead paragraph so the deep copy reads as a side-effect and the callback-driven modifications as the headline;
+- [x] Docs: Update the "When to use `walk` vs `structuredClone`" callout to align with the single-pass / modification-focused framing;
+- [x] Docs: Add a "Built-in types" subsection that documents how `Date`, `RegExp`, `Map`, `Set`, `WeakMap`, `WeakSet`, `ArrayBuffer`, `DataView`, typed arrays, DOM nodes, and functions are passed by reference;
+- [x] Docs: Tighten the `objectCallback` section to enumerate the three return-value outcomes (object/array, primitive, `IGNORE`);
+- [x] Docs: Rewrite the "Deep forEach" section to make the return-value contract explicit (`keyCallback` must return a value, use `return value` for a pass-through forEach);
+- [x] Docs: Add a "Skip a branch" subsection that documents returning `IGNORE` from `objectCallback` to drop an entire subtree (vs `keyCallback` which only drops a single primitive key);
+- [x] Docs: Reframe the `keyCallback` intro so "forEach" is the central concept, not a secondary use case;
+- [x] Docs: Add a "Why one callback, not a list of methods" section that explains the single-pass architecture and points users toward callback factories (e.g. an `omitKeys(...keys)` factory) instead of pre-built methods on `walk`;
+- [x] Docs: Add an "Order of execution" section that makes the key invariants visible up front (level-internal key order, deferred nested walks, `objectCallback` before `keyCallback`, root behavior);
+
+
+
 ### 5.0.7 ( 2026-07-19)
 - [x] Fix: built-in object types whose data lives outside the own-enumerable-string-key model (`Date`, `RegExp`, `Map`, `Set`, `WeakMap`, `WeakSet`, `ArrayBuffer`, `DataView`, and all `TypedArray` subclasses) used to be classified as a plain `object` by `findType` and ended up as an empty `{}` in the result. They are now classified as `simple` and preserved by reference, matching the contract already used for `function` values and DOM nodes. Note: this changes the observable shape of the result when a property holds one of these types — the value is now the same reference as the input, not a plain-object copy;
 
