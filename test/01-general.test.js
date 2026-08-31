@@ -190,5 +190,38 @@ describe ( 'Walk: Deep copy', () => {
               expect ( r.root ).toEqual ({ a: 1 })
       }) // it Property named "root" - breadcrumbs are correct
 
+
+
+    it ( 'Top-level `null` is preserved (does not crash, does not silently drop)', () => {
+                // Regression test for v3.0.0 "Breaks if object contains value 'null'".
+                // The bug was carried as open through 2.0.0 / 2.0.1 and fixed in 3.0.1.
+                // The README and JSDoc both claim null is handled, but until this
+                // test was added there was no test that actually exercised a
+                // top-level null value. Confirms the claim.
+                const r = walk ({ data: null })
+                expect ( r ).toBe ( null )
+        }) // it Top-level `null` is preserved
+
+
+
+    it ( 'Top-level `undefined` is preserved (does not crash)', () => {
+                // Sibling test to the null case. `undefined` is also a 'simple'
+                // value in `findType` and should round-trip without losing the
+                // value or crashing the walker.
+                const r = walk ({ data: undefined })
+                expect ( r ).toBe ( undefined )
+        }) // it Top-level `undefined` is preserved
+
+
+
+    it ( 'Top-level `0` / `false` / `""` round-trip as themselves, not as `undefined`', () => {
+                // `findType` classifies these as 'simple' but a buggy walker
+                // can confuse them with "absent" and store `undefined`.
+                // Pins the falsy-but-present contract.
+                expect ( walk ({ data: 0 }) ).toBe ( 0 )
+                expect ( walk ({ data: false }) ).toBe ( false )
+                expect ( walk ({ data: '' }) ).toBe ( '' )
+        }) // it Top-level falsy primitives round-trip
+
 }) // describe
 
