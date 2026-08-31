@@ -319,7 +319,6 @@ These limitations are covered in a bit larger library - [walk-async](https://git
 ## Links
 - [Release history](Changelog.md)
 - [ Walk-async library](https://github.com/PeterNaydenov/walk-async)
-- [ Documentation version 4.x.x](https://github.com/PeterNaydenov/walk/blob/master/README_v.4.x.x.md)
 - [ Migration guide ](https://github.com/PeterNaydenov/walk/blob/master/Migration.guide.md)
 
 
