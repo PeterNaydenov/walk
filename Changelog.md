@@ -2,6 +2,13 @@
 
 
 
+### 6.1.0 (2026-08-31)
+- [x] Feature: Added a skill at `.agents/skills/git-walk/SKILL.md`;
+- [x] Cleanup: removed the `README_v.2.x.x.md`, `README_v.3.x.x.md`, and `README_v.4.x.x.md` legacy README files from the repo root;
+- [x] Tests: Added 3 regression tests in `test/01-general.test.js` covering the "Breaks if object contains value 'null'" plus the sibling `undefined` case and a falsy-primitives sweep. All 3 confirm the current v6 behavior: `walk({ data: null })` returns `null`, `walk({ data: undefined })` returns `undefined`, and `walk({ data: 0 } / false / '')` round-trip as themselves (not as `undefined`). Suite goes from 52 to 55 passing tests;
+
+
+
 ### 6.0.0 (2026-08-08)
 - [x] Behavior: `keyCallback` now re-types the value it returns. Returning a plain object or array triggers a nested walk into the new structure via the existing `extend` mechanism — the same as if it had been in the original input. Built-in types (`Date`, `Map`, `Set`, typed arrays, DOM nodes, functions) remain `'simple'` and are still passed by reference, with no descent. Order of execution within a level is preserved because the new walk is deferred;
 - [x] Docs: Update the `keyCallback` section in the README to enumerate the three return-value outcomes (primitive / built-in, plain object or array, `IGNORE`) — symmetric with the `objectCallback` section;
