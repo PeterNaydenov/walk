@@ -2,8 +2,11 @@
 
 node_modules
 /.nyc_output
+/.claude
+/.agents
 /coverage
 /test
+/benchmarks
 
 package-lock.json
 README_v.2.x.x.md
