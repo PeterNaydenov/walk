@@ -3,91 +3,142 @@
 import findType from "./findType.js";
 import validateForInsertion from "./validateForInsertion.js";
 import setKey from "./setKey.js";
+import createCallbackArgs from "./createCallbackArgs.js";
+import PASS, { isPass } from "./pass.js";
+import IGNORE, { isIgnore } from "./ignore.js";
+import { isFinish } from "./finish.js";
 
 
 
-function copyObject ( resource, result, extend, cb, breadcrumbs, ...args ) {
+function copyObject ( resource, result, extend, cb, breadcrumbs, settings, control, parentPath, pass, parent, ancestors, ...args ) {
     let
           [ keyCallback, objectCallback ] = cb
         , keys = Object.keys ( resource )
+        , parents = settings.detectCycles ? { data:resource, location:result, parent, depth:parent ? parent.depth + 1 : 0 } : undefined
+        , last = false
         ;
 
-    keys.forEach ( k => {
+    if ( ancestors )   ancestors.set ( resource, parents )
+
+    for ( let index = 0; index < keys.length && !last; index++ ) {
+                    const k = keys[index];
                     let
-                          type = findType(resource[k])
-                        , item  = resource[k]
-                        , resultIsArray = (findType (result) === 'array')
-                        , keyNumber = !isNaN ( k )
-                        , IGNORE = Symbol ( 'ignore___' )
-                        , br = `${breadcrumbs}/${k}`
+                          item = resource[k]
+                        , type = findType ( item )
+                        , canInsert = settings.copy && validateForInsertion ( k, result )
+                        , br = settings.breadcrumbs && ( type !== 'simple' || ( !pass && keyCallback ) ) ? `${breadcrumbs}/${k}` : undefined
+                        , passChild = false
                         ;
 
-                    if ( type !== 'simple' && objectCallback ) {
-                                        item = objectCallback ({ value:item, key:k, breadcrumbs: br, IGNORE }, ...args )
-                                        if ( item === IGNORE )   return
+                    if ( type !== 'simple' && objectCallback && !control.isFinished ) {
+                                        const callbackArgs = createCallbackArgs ( item, k, IGNORE, br, parentPath, settings )
+                                        callbackArgs.PASS = PASS
+                                        const replacement = objectCallback ( callbackArgs, ...args )
+                                        if ( isFinish ( replacement ) ) {
+                                                if ( !replacement.hasValue || !keyCallback ) {
+                                                        finish ( replacement, result, k, canInsert, settings, control )
+                                                        return parents
+                                                    }
+                                                // Discard unrelated pending work. Only the selected
+                                                // final branch may schedule further containers.
+                                                extend.length = 0
+                                                control.restart = true
+                                                control.isFinished = true
+                                                last = true
+                                                item = replacement.value
+                                            }
+                                        else if ( isIgnore ( replacement ) )   continue
+                                        else if ( isPass ( replacement ) ) {
+                                                passChild = true
+                                                if ( replacement.hasValue )   item = replacement.value
+                                            }
+                                        else    item = replacement
                                         type = findType ( item )
                         }
 
                     if ( type === 'simple' ) {
-                                    if ( !keyCallback ) {
-                                            const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
+                                    if ( passChild || ( pass && !control.isFinished ) || !keyCallback ) {
+                                            if ( !settings.copy )   continue
                                             if ( canInsert )    result.push ( item )     // It's an array
                                             else                setKey ( result, k, item ) // It's an object
-                                            return
+                                            continue
                                         }
-                                    let keyRes = keyCallback ({ value:item, key:k, breadcrumbs: br, IGNORE }, ...args );
-                                    if ( keyRes === IGNORE )   return
+                                    const callbackArgs = createCallbackArgs ( item, k, IGNORE, br, parentPath, settings );
+                                    callbackArgs.isFinished = control.isFinished
+                                    let keyRes = keyCallback ( callbackArgs, ...args );
+                                    if ( isFinish ( keyRes ) ) {
+                                            finish ( keyRes, result, k, canInsert, settings, control )
+                                            return parents
+                                        }
+                                    if ( isIgnore ( keyRes ) )   continue
                                     // Re-type the returned value. A plain object/array returned from
-                                    // keyCallback is walked into via the same extend mechanism used for
+                                    // keyCallback is walked into via the same work queue used for
                                     // original nested values; built-in types (Date, Map, Set, etc.) are
                                     // still 'simple' and stored by reference.
                                     const newType = findType ( keyRes )
                                     if ( newType === 'simple' ) {
-                                            const canInsert = validateForInsertion ( k, result );  // Find if it's array or object?
+                                            if ( !settings.copy )   continue
                                             if ( canInsert )    result.push ( keyRes )      // It's an array
                                             else                setKey ( result, k, keyRes ) // It's an object
-                                            return
+                                            continue
                                         }
-                                    if ( newType === 'object' ) {
-                                            const newObject = {}
-                                            if ( resultIsArray && keyNumber )   result.push ( newObject )
-                                            else                                setKey ( result, k, newObject )
-                                            extend.push ( generateList ( keyRes, newObject, extend, cb, br, args ) )
-                                            return
-                                        }
-                                    if ( newType === 'array' ) {
-                                            const newArray = []
-                                            if ( resultIsArray && keyNumber )   result.push ( newArray )
-                                            else                                setKey ( result, k, newArray )
-                                            extend.push ( generateList ( keyRes, newArray, extend, cb, br, args ) )
-                                            return
-                                        }
+                                    item = keyRes
+                                    type = newType
+                        }
+
+                    const circular = settings.detectCycles ? findParent ( item, parents, ancestors ) : undefined
+                    if ( circular ) {
+                            if ( !settings.copy )   continue
+                            if ( canInsert )   result.push ( circular.location )
+                            else               setKey ( result, k, circular.location )
+                            continue
                         }
 
                     if ( type === 'object' ) {
-                            const newObject = {};
-                            if ( resultIsArray && keyNumber )   result.push ( newObject )
-                            else                                setKey ( result, k, newObject )
-                            extend.push ( generateList ( item, newObject,  extend, cb, br, args ) )
+                            const newObject = settings.copy ? {} : undefined;
+                            if ( settings.copy ) {
+                                    if ( canInsert )   result.push ( newObject )
+                                    else               setKey ( result, k, newObject )
+                                }
+                            extend.push ( createJob ( item, newObject, br, parentPath, k, passChild, parents ) )
                        }
 
                     if ( type === 'array' ) {
-                            const newArray = [];
-                            if ( resultIsArray && keyNumber )   result.push ( newArray )
-                            else                                setKey ( result, k, newArray )
-                            extend.push ( generateList( item, newArray, extend, cb, br, args ) )
+                            const newArray = settings.copy ? [] : undefined;
+                            if ( settings.copy ) {
+                                    if ( canInsert )   result.push ( newArray )
+                                    else               setKey ( result, k, newArray )
+                                }
+                            extend.push ( createJob ( item, newArray, br, parentPath, k, passChild, parents ) )
                         }
-            })
+            }
+    return parents
 } // copyObject func.
 
 
 
-function* generateList ( data, location, ex, callback, breadcrumbs, args ) {
-    yield copyObject ( data , location, ex, callback, breadcrumbs, ...args )
-} // generateList func.
+function finish ( instruction, result, k, canInsert, settings, control ) {
+    control.finished = true
+    if ( !settings.copy || !instruction.hasValue )   return
+    if ( canInsert )   result.push ( instruction.value )
+    else               setKey ( result, k, instruction.value )
+} // finish func.
+
+
+
+function createJob ( data, location, breadcrumbs, parentPath, key, pass, parent ) {
+    return { data, location, breadcrumbs, parentPath, key, pass, parent }
+} // createJob func.
+
+
+
+function findParent ( data, parent, ancestors ) {
+    if ( ancestors )   return ancestors.get ( data )
+    for ( let current = parent; current; current = current.parent ) {
+            if ( current.data === data )   return current
+        }
+} // findParent func.
 
 
 
 export default copyObject
-
-

@@ -1,9 +1,8 @@
 function validateForInsertion ( k, result ) {
-    const inArray = result instanceof Array;
-    if ( !inArray )   return false
-    const isNumber = !isNaN ( k );
-    if ( isNumber )   return true
-    else              return false
+    if ( !Array.isArray ( result ) )   return false
+    const index = Number ( k );
+    // Array indexes are canonical decimal strings from 0 through 2^32 - 2.
+    return Number.isInteger ( index ) && index >= 0 && index < 4294967295 && String ( index ) === k
 } // validateForInsertion func.
 
 

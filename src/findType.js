@@ -1,7 +1,7 @@
 function findType ( x ) {
     if ( x == null              )   return 'simple' // null and undefined
     if ( x.nodeType             )   return 'simple' // DOM node
-    if ( x instanceof Array     )   return 'array'
+    if ( Array.isArray ( x )     )   return 'array'
     if ( typeof x === 'object'  ) {
         // Built-in object types whose data lives outside the own-enumerable-string-key
         // model that walk uses. Treated as 'simple' so the value is preserved by
