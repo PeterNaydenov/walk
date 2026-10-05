@@ -9,6 +9,7 @@
   "types": "./types/main.d.ts",
   "exports": {
     ".": {
+      "types": "./types/main.d.ts",
       "import": "./src/main.js",
       "require": "./dist/walk.cjs",
       "default": "./src/main.js"
