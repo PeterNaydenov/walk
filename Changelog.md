@@ -1,6 +1,26 @@
 # Release History
 
 
+### 7.0.0 (2026-10-05)
+- [x] Docs: Update the skill to `walk`;
+- [x] Feature: Added `FINISH` to both callbacks. Return `FINISH()` to omit the current value or branch and stop immediately. From `objectCallback`, `FINISH(value)` selects a final branch whose key callbacks receive `isFinished:true`, including nested leaves, without further object callbacks; without keyCallback the value is included directly. From `keyCallback`, `FINISH(value)` includes the supplied value directly and stops immediately. Unrelated pending containers are not completed; `settings.copy:false` still returns `undefined`;
+- [x] Breaking: `IGNORE` is now a function in both callbacks. Replace `return IGNORE` with `return IGNORE()`; branch removal behavior is unchanged;
+- [x] Feature: Added optional `settings`. Callback arguments `breadcrumbs` and `parentPath` are enabled by default; only literal `false` disables their preparation. Walks without callbacks skip path preparation automatically;
+- [x] Feature: Added `settings.copy:false` to walk without building a result. Callback order, paths, replacements, `IGNORE()`, and `PASS()` keep their traversal behaviour; walk returns `undefined`;
+- [x] Feature: Added read-only `parentPath` arrays to both callbacks. Paths exclude the current key, preserve property boundaries, and use input array indexes;
+- [x] Feature: Added the `PASS` function to `objectCallback`. Return `PASS()` to copy the current value, or `PASS(modifiedValue)` to use a replacement, without immediate key callbacks. Nested objects and arrays resume normal callbacks; `IGNORE()` removes the entire branch;
+- [x] Fix: Expose generated declarations through the package's `exports` configuration for modern TypeScript consumers;
+- [x] Fix: Read each property once before finding its type, so getters are not executed twice;
+- [x] Fix: Recognize arrays across JavaScript contexts and preserve numeric-looking non-index properties under their original names;
+- [x] Performance: Replaced one-use generator wrappers with a work queue. Processed entries are cleared to release container and path references earlier; callback order is preserved;
+- [x] Fix: Detect circular references through the current branch's ancestors and link them to the matching ancestor copy. Without copying, stop at the circular edge. Callbacks can still ignore or replace the edge; shared containers on separate branches are copied independently;
+- [x] Feature: Added `settings.detectCycles`, enabled by default. Only literal `false` skips circular-reference checks and all ancestor bookkeeping. Visited data and callback replacements must then have no circles, or callbacks must prune cyclic branches;
+- [x] Docs: Rewrote the README around readable traversal rules, transformations during copying, deep forEach, branch control, paths, and reference behaviour. Updated the skill and removed the outdated restriction on finite nested walk calls;
+- [x] Tests: Added regression coverage for settings, parent paths, local `PASS`, traversal without copying, circular references, getters, array recognition and properties, and early finishing with retained or omitted final values and final-branch key callbacks. Full statement, branch, function, and line coverage is maintained;
+- [x] Tests: Added deterministic generated structures checked against an independent recursive reference, with 768 transformation cases across settings and 384 early-finish combinations. Covers sparse arrays, unusual keys, built-in references, shared containers, circular ancestors, callback metadata, source preservation, replacements, local PASS, and final-branch callbacks;
+- [x] Docs: Added reproducible memory measurements for large flat, nested, and deep structures, comparing copying and traversal with paths enabled or disabled. Documents sampled extra heap, retained results, collection after releasing results, methodology, and complete samples;
+
+
 
 ### 6.1.0 (2026-08-31)
 - [x] Feature: Added a skill at `.agents/skills/git-walk/SKILL.md`;
@@ -143,5 +163,3 @@
  - [x] Test package;
  - [x] Documentation;
  - [ ] Bug: Breadcrumbs in callback are not correct;
-
-
