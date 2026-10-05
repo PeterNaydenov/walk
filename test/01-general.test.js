@@ -7,6 +7,38 @@ import walk from '../src/main.js'
 
 describe ( 'Walk: Deep copy', () => {
 
+    it.each ([ false, true ]) ( 'Read a getter once (keyCallback: %s)', useKeyCallback => {
+                let reads = 0
+                const data = {
+                          get number () { return ++reads }
+                    }
+                const options = { data }
+                if ( useKeyCallback )   options.keyCallback = ({ value }) => value * 10
+
+                const r = walk ( options )
+
+                expect ( reads ).toBe ( 1 )
+                expect ( r.number ).toBe ( useKeyCallback ? 10 : 1 )
+        }) // it Read a getter once
+
+
+
+    it ( 'Copy the captured getter value even if later reads would change its type', () => {
+                let reads = 0
+                const child = { value: 42 }
+                const data = {
+                          get child () { return ++reads === 1 ? child : null }
+                    }
+
+                const r = walk ({ data })
+
+                expect ( reads ).toBe ( 1 )
+                expect ( r.child ).toEqual ( child )
+                expect ( r.child ).not.toBe ( child )
+        }) // it Copy the captured getter value
+
+
+
     it ( 'Copy a primitive value', () => {
                 let
                       x = 12

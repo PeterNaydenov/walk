@@ -48,7 +48,7 @@ describe ( 'Walk: objectCallback', () => {
 
                 function oCallbackFn ({ value:o, key:k, breadcrumbs, IGNORE }) {
                           const { sizes } = o;
-                          if ( sizes )   return IGNORE
+                          if ( sizes )   return IGNORE()
                           else           return o
                       }
 
@@ -126,7 +126,7 @@ describe ( 'Walk: objectCallback', () => {
                             };
 
                 function oCallbackFn ({ value:o, key, IGNORE }) {
-                          if ( key === 'props' )   return IGNORE
+                          if ( key === 'props' )   return IGNORE()
                           return o
                       }
 
@@ -150,7 +150,7 @@ describe ( 'Walk: objectCallback', () => {
                             };
 
                 function oCallbackFn ({ value:o, key, breadcrumbs, IGNORE }) {
-                          if ( breadcrumbs === 'root/props' )   return IGNORE
+                          if ( breadcrumbs === 'root/props' )   return IGNORE()
                           return o
                       }
 
@@ -172,7 +172,7 @@ describe ( 'Walk: objectCallback', () => {
                 function oCallbackFn ({ value:o, key, IGNORE }) {
                                     if ( key === 'root' ) return o
                                     if ( o.id === 5     ) return o
-                                    return IGNORE
+                                    return IGNORE()
                       }
 
                 let r = walk ({ data : x, objectCallback : oCallbackFn })
@@ -193,7 +193,7 @@ describe ( 'Walk: objectCallback', () => {
                 function oCallbackFn ({ value:o, key, IGNORE }) {
                           if ( key === 'root' ) return o
                           if ( o[0] === 5     ) return o
-                          return IGNORE
+                          return IGNORE()
                       }
 
                 let r = walk ({ data:x, objectCallback: oCallbackFn })
@@ -212,7 +212,7 @@ describe ( 'Walk: objectCallback', () => {
 
                 function oCallbackFn ({ value:o, key, IGNORE }) {
                           if ( key === 'root' )            return o
-                          if ( typeof o === 'object' )     return IGNORE
+                          if ( typeof o === 'object' )     return IGNORE()
                           return o
                       }
 
@@ -338,7 +338,7 @@ describe ( 'Walk: objectCallback', () => {
                   let x = { a: 1 };
 
                   function oCallbackFn ({ value:o, key:k, IGNORE }) {
-                            if ( k === 'root' )   return IGNORE
+                            if ( k === 'root' )   return IGNORE()
                             return o
                         }
 

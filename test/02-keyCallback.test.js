@@ -22,7 +22,7 @@ describe ( 'Walk: keyCallback', () => {
                   , r = walk ({
                                   data : x
                                 , keyCallback : ({ value:v, key:k, IGNORE }) => {
-                                                      if ( k === 'name' )   return IGNORE
+                                                      if ( k === 'name' )   return IGNORE()
                                                       return v
                                                   }
                           })
@@ -47,7 +47,7 @@ describe ( 'Walk: keyCallback', () => {
                 let r = walk ({
                                   data : x
                                 , keyCallback : ({value:v,key:k,breadcrumbs, IGNORE }) => {
-                                                        if ( breadcrumbs.includes('root/props/sizes'))   return IGNORE
+                                                        if ( breadcrumbs.includes('root/props/sizes'))   return IGNORE()
                                                         return 'xxx'
                                                     }
                           })
@@ -70,7 +70,7 @@ describe ( 'Walk: keyCallback', () => {
                                         , sizes : [12,33,12,21]
                                     }
                             };
-                  let r = walk ({ data:x, keyCallback: ({IGNORE}) => IGNORE })
+                  let r = walk ({ data:x, keyCallback: ({IGNORE}) => IGNORE() })
                   expect ( r ).toHaveProperty ( 'ls' )
                   expect ( r ).toHaveProperty ( 'props' )
                   expect ( r.props ).toHaveProperty ( 'sizes' )
@@ -280,7 +280,7 @@ describe ( 'Walk: keyCallback', () => {
                 const x = { name: 'Peter', age: 47 }
                 const r = walk ({
                           data: x
-                        , keyCallback: ({ key, value, IGNORE }) => key === 'age' ? IGNORE : value
+                        , keyCallback: ({ key, value, IGNORE }) => key === 'age' ? IGNORE() : value
                     })
                 expect ( r.name ).toBe ( 'Peter' )
                 expect ( r ).not.toHaveProperty ( 'age' )
@@ -341,5 +341,18 @@ describe ( 'Walk: keyCallback', () => {
       }) // it keyCallback returning a nested object with arrays
 
 
-}) // describe
+    it ( 'keyCallback can replace array elements with objects and arrays', () => {
+                const r = walk ({
+                          data : [1,2]
+                        , keyCallback : ({ value, breadcrumbs }) => {
+                                              if ( breadcrumbs === 'root/0' )   return { count:10 }
+                                              if ( breadcrumbs === 'root/1' )   return [20]
+                                              return value + 1
+                                          }
+                    })
 
+                expect ( r ).toEqual ([ { count:11 }, [21] ])
+        }) // it keyCallback can replace array elements
+
+
+}) // describe
