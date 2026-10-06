@@ -35,7 +35,7 @@ let result = walk ({
 
 The rules work wherever those keys appear. The `history` branch is removed before its contents are visited. The source remains unchanged because these callbacks return replacements rather than modifying it.
 
-> This README describes the upcoming major release. `IGNORE()` replaces the earlier `IGNORE` constant. See the [migration guide](Migration.guide.md) when upgrading.
+> This README describes version 7. `IGNORE()` replaces the earlier `IGNORE` constant. See the [migration guide](Migration.guide.md) when upgrading from version 6.
 
 ## Choose synchronous or asynchronous Walk
 
@@ -159,6 +159,8 @@ result.scores !== data.scores    // true
 ```
 
 Objects and arrays get new containers. Supported built-in values and functions keep their original references; see [What gets copied](#what-gets-copied).
+
+A plain copy is also fast. On large inputs, `walk ({ data })` measured faster than the platform's `structuredClone`, and it completed a 4,000-level chain where `structuredClone` exceeded the call stack. See [Compared with structuredClone](#compared-with-structuredclone).
 
 A leaf value passed as root `data` is returned directly when copying; neither callback runs for that root. With `settings.copy:false`, the return value is `undefined` for any root.
 
@@ -402,7 +404,7 @@ With detection disabled, callbacks must prune any cyclic branches before revisit
 
 ## Measurements with different data structures
 
-Structure and settings both affect execution time. These measurements use the upcoming v7 implementation, with both callbacks returning `value` and no branches skipped. Times are milliseconds for one complete walk.
+Structure and settings both affect execution time. These measurements use the v7 implementation, with both callbacks returning `value` and no branches skipped. Times are milliseconds for one complete walk.
 
 The inputs contain no circular references:
 
@@ -425,6 +427,27 @@ Measured on October 3, 2026, using Node v26.10.0 on macOS arm64, an Apple M3 Max
 Preparing parent paths has a larger effect on the deep chain because the arrays grow at every level. Disabling cycle detection helps on nested data; the flat object showed no meaningful gain. Small differences, such as 0.76 versus 0.77 ms, should be treated as measurement variation.
 
 These are examples from one machine, rather than guaranteed timings. Callback work, runtime, hardware, and data shape change the result. Measure your own workload, and disable only features you do not need. Use `detectCycles:false` only when visited branches have no circles or callbacks prune them.
+
+### Compared with structuredClone
+
+`structuredClone` is the platform's deep copy without callbacks. For a plain copy of the same three inputs, it gives `walk ({ data })` a baseline. Times are milliseconds for one complete copy, with the ratio to `structuredClone` in parentheses:
+
+| Operation | Flat object | Nested records | Deep chain |
+| --- | ---: | ---: | ---: |
+| `structuredClone` | 491.87 | 79.22 | Failed¹ |
+| Copy, no callbacks | 275.40 (0.56) | 72.80 (0.92) | 0.57 |
+| Copy, pass-through key callback, all settings enabled | 309.65 (0.63) | 109.53 (1.38) | 7.02 |
+| Copy, pass-through key callback, both paths disabled | 295.78 (0.60) | 73.14 (0.92) | 0.67 |
+
+¹ `structuredClone` threw `RangeError: Maximum call stack size exceeded` on the 4,000-level chain. On the same runtime it completed 2,216 levels and failed at 2,224. Walk uses a work queue instead of recursion, so depth is bounded by memory.
+
+Without callbacks, walk was faster than `structuredClone` on both completed inputs. A key callback with default paths cost more than the native copy on the nested records; disabling both paths removed that difference. The inputs contain plain objects and arrays only. `structuredClone` also clones built-in objects and preserves shared references, while walk keeps built-in values by reference and copies shared containers independently, so choose by the copying contract first.
+
+Measured on October 5, 2026, using Node v26.10.0 on macOS arm64, an Apple M3 Max, and 128 GiB of RAM, with the released v7.0.0 source. Each sample ran in a fresh Node process with three warmup copies and explicit garbage collection outside the timer. Operations rotated between samples; the table shows the median of five samples. Deep-chain samples averaged five copies. The [benchmark script](benchmarks/structuredClone.mjs) and [complete samples](benchmarks/structuredClone.results.json) are in the repository:
+
+```sh
+node benchmarks/structuredClone.mjs
+```
 
 ### Memory use
 
