@@ -1,0 +1,529 @@
+{
+  "environment": {
+    "node": "v26.10.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M3 Max",
+    "memoryGiB": 128,
+    "measuredAt": "2026-10-05T19:39:07.406Z",
+    "sourceSha256": "8304c5c601f67fd46bff6d6047fab89d5e5b02045a6d41fdbeb3062cc4f8aed7",
+    "samples": 5,
+    "warmupsPerSample": 3,
+    "repeatsPerSample": {
+      "flat": 1,
+      "records": 1,
+      "deep": 5
+    },
+    "unit": "milliseconds for one complete copy"
+  },
+  "results": [
+    {
+      "shape": "flat",
+      "operation": "structuredClone",
+      "samples": [
+        {
+          "shape": "flat",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 486.5168749999998
+        },
+        {
+          "shape": "flat",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 491.8686670000002
+        },
+        {
+          "shape": "flat",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 521.6104160000004
+        },
+        {
+          "shape": "flat",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 598.7768329999999
+        },
+        {
+          "shape": "flat",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 473.1392500000002
+        }
+      ],
+      "medianMs": 491.87,
+      "rangeMs": [
+        473.14,
+        598.78
+      ],
+      "relativeToStructuredClone": 1
+    },
+    {
+      "shape": "flat",
+      "operation": "walk",
+      "samples": [
+        {
+          "shape": "flat",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 283.48733300000004
+        },
+        {
+          "shape": "flat",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 275.40154200000006
+        },
+        {
+          "shape": "flat",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 259.31054200000017
+        },
+        {
+          "shape": "flat",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 301.5369999999998
+        },
+        {
+          "shape": "flat",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 249.06166700000017
+        }
+      ],
+      "medianMs": 275.4,
+      "rangeMs": [
+        249.06,
+        301.54
+      ],
+      "relativeToStructuredClone": 0.56
+    },
+    {
+      "shape": "flat",
+      "operation": "walk-keyCallback",
+      "samples": [
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 306.98529099999996
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 324.30700000000024
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 305.43054200000006
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 309.6524159999999
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 329.35629199999994
+        }
+      ],
+      "medianMs": 309.65,
+      "rangeMs": [
+        305.43,
+        329.36
+      ],
+      "relativeToStructuredClone": 0.63
+    },
+    {
+      "shape": "flat",
+      "operation": "walk-keyCallback-no-paths",
+      "samples": [
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 320.19854099999975
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 353.6840829999999
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 295.50645799999984
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 295.78125
+        },
+        {
+          "shape": "flat",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 295.31549999999993
+        }
+      ],
+      "medianMs": 295.78,
+      "rangeMs": [
+        295.32,
+        353.68
+      ],
+      "relativeToStructuredClone": 0.6
+    },
+    {
+      "shape": "records",
+      "operation": "structuredClone",
+      "samples": [
+        {
+          "shape": "records",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 78.75704099999996
+        },
+        {
+          "shape": "records",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 77.34779199999997
+        },
+        {
+          "shape": "records",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 79.216208
+        },
+        {
+          "shape": "records",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 81.65191599999997
+        },
+        {
+          "shape": "records",
+          "operation": "structuredClone",
+          "repeats": 1,
+          "ms": 86.35137499999996
+        }
+      ],
+      "medianMs": 79.22,
+      "rangeMs": [
+        77.35,
+        86.35
+      ],
+      "relativeToStructuredClone": 1
+    },
+    {
+      "shape": "records",
+      "operation": "walk",
+      "samples": [
+        {
+          "shape": "records",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 73.534042
+        },
+        {
+          "shape": "records",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 70.97887500000002
+        },
+        {
+          "shape": "records",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 72.80154100000001
+        },
+        {
+          "shape": "records",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 69.107167
+        },
+        {
+          "shape": "records",
+          "operation": "walk",
+          "repeats": 1,
+          "ms": 78.32499999999999
+        }
+      ],
+      "medianMs": 72.8,
+      "rangeMs": [
+        69.11,
+        78.32
+      ],
+      "relativeToStructuredClone": 0.92
+    },
+    {
+      "shape": "records",
+      "operation": "walk-keyCallback",
+      "samples": [
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 109.52754199999998
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 110.01779199999999
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 106.79499999999996
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 108.5265
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback",
+          "repeats": 1,
+          "ms": 117.777084
+        }
+      ],
+      "medianMs": 109.53,
+      "rangeMs": [
+        106.79,
+        117.78
+      ],
+      "relativeToStructuredClone": 1.38
+    },
+    {
+      "shape": "records",
+      "operation": "walk-keyCallback-no-paths",
+      "samples": [
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 72.39687499999997
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 73.13695899999999
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 76.25041700000003
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 75.186666
+        },
+        {
+          "shape": "records",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 1,
+          "ms": 72.48258299999998
+        }
+      ],
+      "medianMs": 73.14,
+      "rangeMs": [
+        72.4,
+        76.25
+      ],
+      "relativeToStructuredClone": 0.92
+    },
+    {
+      "shape": "deep",
+      "operation": "structuredClone",
+      "samples": [
+        {
+          "shape": "deep",
+          "operation": "structuredClone",
+          "repeats": 5,
+          "failed": true,
+          "error": "RangeError: Maximum call stack size exceeded"
+        },
+        {
+          "shape": "deep",
+          "operation": "structuredClone",
+          "repeats": 5,
+          "failed": true,
+          "error": "RangeError: Maximum call stack size exceeded"
+        },
+        {
+          "shape": "deep",
+          "operation": "structuredClone",
+          "repeats": 5,
+          "failed": true,
+          "error": "RangeError: Maximum call stack size exceeded"
+        },
+        {
+          "shape": "deep",
+          "operation": "structuredClone",
+          "repeats": 5,
+          "failed": true,
+          "error": "RangeError: Maximum call stack size exceeded"
+        },
+        {
+          "shape": "deep",
+          "operation": "structuredClone",
+          "repeats": 5,
+          "failed": true,
+          "error": "RangeError: Maximum call stack size exceeded"
+        }
+      ],
+      "failed": true,
+      "error": "RangeError: Maximum call stack size exceeded",
+      "medianMs": null,
+      "rangeMs": null,
+      "relativeToStructuredClone": null
+    },
+    {
+      "shape": "deep",
+      "operation": "walk",
+      "samples": [
+        {
+          "shape": "deep",
+          "operation": "walk",
+          "repeats": 5,
+          "ms": 0.5641834000000003
+        },
+        {
+          "shape": "deep",
+          "operation": "walk",
+          "repeats": 5,
+          "ms": 0.6871666000000005
+        },
+        {
+          "shape": "deep",
+          "operation": "walk",
+          "repeats": 5,
+          "ms": 0.5728250000000003
+        },
+        {
+          "shape": "deep",
+          "operation": "walk",
+          "repeats": 5,
+          "ms": 0.5720499999999987
+        },
+        {
+          "shape": "deep",
+          "operation": "walk",
+          "repeats": 5,
+          "ms": 0.5710333999999989
+        }
+      ],
+      "medianMs": 0.57,
+      "rangeMs": [
+        0.56,
+        0.69
+      ],
+      "relativeToStructuredClone": null
+    },
+    {
+      "shape": "deep",
+      "operation": "walk-keyCallback",
+      "samples": [
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback",
+          "repeats": 5,
+          "ms": 6.988133199999998
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback",
+          "repeats": 5,
+          "ms": 7.0246916
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback",
+          "repeats": 5,
+          "ms": 7.2724918
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback",
+          "repeats": 5,
+          "ms": 6.9967749999999995
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback",
+          "repeats": 5,
+          "ms": 7.033133400000001
+        }
+      ],
+      "medianMs": 7.02,
+      "rangeMs": [
+        6.99,
+        7.27
+      ],
+      "relativeToStructuredClone": null
+    },
+    {
+      "shape": "deep",
+      "operation": "walk-keyCallback-no-paths",
+      "samples": [
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 5,
+          "ms": 0.7655831999999989
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 5,
+          "ms": 0.6683999999999998
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 5,
+          "ms": 0.5769832000000008
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 5,
+          "ms": 0.721041600000001
+        },
+        {
+          "shape": "deep",
+          "operation": "walk-keyCallback-no-paths",
+          "repeats": 5,
+          "ms": 0.6653667999999996
+        }
+      ],
+      "medianMs": 0.67,
+      "rangeMs": [
+        0.58,
+        0.77
+      ],
+      "relativeToStructuredClone": null
+    }
+  ]
+}
