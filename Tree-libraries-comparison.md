@@ -4,7 +4,7 @@ Nested data can turn a small transformation into a stack of loops. A tree walkin
 
 This article compares **Walk**, **traverse** and **Deepdash** through those tasks. In our local measurements, Walk took the least time in every case that completed. With Walk's default navigation and cycle settings, the competitors took approximately **1.9–8.9 times as long**. Their APIs offer different traversal controls, however, so speed is only part of the choice.
 
-This article covers **Walk v7**. **Measured on 3 October 2026**, the timings come from a development snapshot taken before the v7 release. The competitors were `traverse@0.6.11` and `deepdash@5.3.9`, using Deepdash's standalone entry point with `lodash@4.18.1` installed. The results describe those implementations, workloads and runtime. `FINISH` was added after the measurements; its v7 API is described below, while the timing table retains the measured snapshot identified by its source fingerprint.
+This article covers **Walk v7**. **Measured on 3 October 2026**, the timings come from a development snapshot taken before the v7 release. The competitors were `traverse@0.6.11` and `deepdash@5.3.9`, using Deepdash's standalone entry point with `lodash@4.18.1` installed. The results describe those implementations, workloads and runtime. `FINISH` was added after the measurements; its v7 API is described below, while the timing table retains the measured snapshot identified by its source fingerprint. A separate section compares Walk's plain copy with the platform's `structuredClone`, measured on 5 October 2026 against the released v7.0.0 source.
 
 ## What each library offers
 
@@ -168,7 +168,36 @@ Cycle checks were enabled for all three libraries. Deepdash used `checkCircular:
 
 The samples showed some variation. For example, default Walk's flat transform ranged from 303.764 to 361.290 ms; traverse ranged from 785.146 to 788.620 ms, and Deepdash from 718.438 to 761.944 ms. Five samples on one machine support a local comparison, not a performance guarantee.
 
-This experiment used plain objects and dense arrays without cycles or shared references. It measured the cost of enabled cycle checking on acyclic data, not performance on cyclic graphs. It did not measure memory consumption, sparse arrays, custom prototypes, built-in object cloning, asynchronous callbacks, or application-specific callback work. It also did not compare pure cloning tools such as `structuredClone`; those answer a different question from transformation during traversal.
+This experiment used plain objects and dense arrays without cycles or shared references. It measured the cost of enabled cycle checking on acyclic data, not performance on cyclic graphs. It did not measure memory consumption, sparse arrays, custom prototypes, built-in object cloning, asynchronous callbacks, or application-specific callback work. Pure cloning tools such as `structuredClone` answer a different question from transformation during traversal; the next section measures Walk's plain copy against it separately.
+
+## Compared with structuredClone
+
+`structuredClone` is the platform's deep copy. It is not a tree walking library: it offers no callbacks, no pruning, and no inspection without copying. It does answer a question Walk users ask: for a plain copy, is `walk ({ data })` slower than the built-in function?
+
+This measurement used the same three inputs. They contain plain objects and dense arrays only, without built-in objects, shared references, or cycles, so both operations produce equivalent plain copies. Four operations ran on each shape:
+
+| Operation | Call |
+| --- | --- |
+| `structuredClone` | `structuredClone ( data )` |
+| Walk copy | `walk ({ data })` |
+| Walk copy with key callback | `walk ({ data, keyCallback:({ value }) => value })` |
+| Walk copy with key callback, paths off | The same call with `settings:{ breadcrumbs:false, parentPath:false }` |
+
+Median elapsed times in **milliseconds per complete copy**, with the ratio to `structuredClone` in parentheses. Lower is better.
+
+| Shape | `structuredClone` | Walk copy | Walk copy with key callback | Walk copy with key callback, paths off |
+| --- | ---: | ---: | ---: | ---: |
+| Flat object | 491.87 | 275.40 (0.56) | 309.65 (0.63) | 295.78 (0.60) |
+| Nested records | 79.22 | 72.80 (0.92) | 109.53 (1.38) | 73.14 (0.92) |
+| Deep chain | Failed³ | 0.57 | 7.02 | 0.67 |
+
+³ `structuredClone` threw `RangeError: Maximum call stack size exceeded` on the 4,000-level chain in every sample. In a separate probe on the same runtime with its default stack size, it completed a chain of 2,216 levels and failed at 2,224. Walk processes nested containers through a work queue, so depth is bounded by memory rather than by the call stack.
+
+Without callbacks, Walk copied the flat object in 0.56 of the `structuredClone` time and the nested records in 0.92 of it. A pass-through key callback with default navigation arguments made the records copy 1.38 times the `structuredClone` time; disabling both paths returned it to 0.92. On the flat object the key callback added less, because a single container has short paths. A copy that transforms nothing has no reason to use a key callback; those rows show what the callback and its metadata cost once a transformation is needed.
+
+Measured on 5 October 2026 using Node v26.10.0 on macOS arm64, Apple M3 Max, and 128 GiB of RAM, against the released Walk v7.0.0 source with fingerprint `8304c5c601f67fd46bff6d6047fab89d5e5b02045a6d41fdbeb3062cc4f8aed7`. Each shape/operation sample ran in a fresh Node process with three warmup copies, explicit garbage collection outside the timer, and one timed copy; deep-chain samples averaged five copies. Operations rotated between samples, five samples each. Every copy was verified for fresh containers and expected values. The samples varied more for `structuredClone` on the flat object (473.14–598.78 ms) than for the Walk copy (249.06–301.54 ms).
+
+The comparison is limited to plain data. `structuredClone` also clones dates, maps, sets, typed arrays, and other built-in objects, preserves shared references, and rejects functions; Walk keeps built-in values and functions by reference and copies shared containers independently. Where that behaviour matters, the two are not interchangeable regardless of timing. The [benchmark script](benchmarks/structuredClone.mjs) and [complete samples](benchmarks/structuredClone.results.json) are kept in the Walk repository; run `node benchmarks/structuredClone.mjs` from its root to repeat the measurement.
 
 ## Which library fits which work?
 
