@@ -42,11 +42,11 @@ export type Settings = {
      */
     copy?: boolean;
     /**
-     * - Defaults to true. Only false disables breadcrumbs preparation.
+     * - Defaults to true. Only false disables breadcrumbs preparation. Without callbacks no breadcrumbs are prepared, whatever this setting says.
      */
     breadcrumbs?: boolean;
     /**
-     * - Defaults to true. Only false disables parent-path preparation.
+     * - Defaults to true. Only false disables parent-path preparation. Without callbacks no parent paths are prepared, whatever this setting says.
      */
     parentPath?: boolean;
     /**
@@ -162,10 +162,12 @@ export type Options = {
  *  @returns {*}
  */
 /**
+ *  Optional controls for copying, callback paths, and circular-reference checks.
+ *
  *  @typedef {object} Settings
  *  @property {boolean} [copy]        - Defaults to true. Only false disables result creation; callbacks still run and walk returns undefined.
- *  @property {boolean} [breadcrumbs] - Defaults to true. Only false disables breadcrumbs preparation.
- *  @property {boolean} [parentPath]  - Defaults to true. Only false disables parent-path preparation.
+ *  @property {boolean} [breadcrumbs] - Defaults to true. Only false disables breadcrumbs preparation. Without callbacks no breadcrumbs are prepared, whatever this setting says.
+ *  @property {boolean} [parentPath]  - Defaults to true. Only false disables parent-path preparation. Without callbacks no parent paths are prepared, whatever this setting says.
  *  @property {boolean} [detectCycles] - Defaults to true. Only false disables circular-reference checks and their bookkeeping; visited data and replacements must then be acyclic or callbacks must prune cyclic branches.
  */
 /**

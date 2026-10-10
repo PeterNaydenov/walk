@@ -378,11 +378,22 @@ let result = walk ({
 | Setting | Default | Effect of `false` |
 | --- | --- | --- |
 | `copy` | `true` | Walk without building a result; return `undefined` |
-| `breadcrumbs` | `true` | Skip preparing breadcrumb strings |
-| `parentPath` | `true` | Skip preparing parent-path arrays |
+| `breadcrumbs` | `true` with callbacks; `false` without | Skip preparing breadcrumb strings |
+| `parentPath` | `true` with callbacks; `false` without | Skip preparing parent-path arrays |
 | `detectCycles` | `true` | Skip circular-reference checks and their bookkeeping |
 
-Only literal `false` disables a setting. Omitted settings remain enabled. Disabled path fields are absent from callback arguments; destructuring them gives `undefined`. With no callbacks, neither path is prepared.
+Only literal `false` disables a setting; omitted settings remain enabled. Disabled path fields are absent from callback arguments; destructuring them gives `undefined`. Without callbacks, neither path is prepared, whatever the settings say.
+
+The `Settings` type is exported. A settings object written inline receives editor suggestions directly. For a separate variable, declare its type so the editor can suggest the names:
+
+```js
+/** @type {import('@peter.naydenov/walk').Settings} */
+const settings = { breadcrumbs:false, parentPath:false };
+
+walk ({ data, settings })
+```
+
+In TypeScript, use `import type { Settings } from '@peter.naydenov/walk'`.
 
 Path preparation takes time and memory. Parent arrays grow with depth, so disabling unused paths is especially useful for deeply nested data. Path settings change metadata preparation. The `copy` setting controls result creation independently: `settings:{ copy:false }` still provides both paths, while `settings:{ copy:false, breadcrumbs:false, parentPath:false }` skips all three kinds of work.
 

@@ -7,6 +7,18 @@ import walk from '../src/main.js'
 
 describe ( 'Walk: settings and parentPath', () => {
 
+    it ( 'Skip reading path settings without callbacks', () => {
+                const data = { nested:{ number:1 } }
+                const settings = {
+                          get breadcrumbs () { throw new Error ( 'Breadcrumbs are only needed by callbacks' ) }
+                        , get parentPath () { throw new Error ( 'Parent paths are only needed by callbacks' ) }
+                    }
+
+                expect ( walk ({ data, settings }) ).toEqual ( data )
+        }) // it Skip reading path settings without callbacks
+
+
+
     it ( 'Build both paths by default, including the root callback', () => {
                 const visited = []
                 const data = { name:'Peter', nested:{ age:47 } }

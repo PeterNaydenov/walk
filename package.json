@@ -9,9 +9,15 @@
   "types": "./types/main.d.ts",
   "exports": {
     ".": {
+      "import": {
+        "types": "./types/main.d.ts",
+        "default": "./src/main.js"
+      },
+      "require": {
+        "types": "./dist/walk.d.cts",
+        "default": "./dist/walk.cjs"
+      },
       "types": "./types/main.d.ts",
-      "import": "./src/main.js",
-      "require": "./dist/walk.cjs",
       "default": "./src/main.js"
     },
     "./package.json": "./package.json",

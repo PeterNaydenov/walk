@@ -1,6 +1,17 @@
 # Release History
 
 
+### 7.0.1 (2026-10-10)
+- [x] Add conditional "exports" so require() resolves dist/walk.d.cts and
+  import resolves types/main.d.ts; add declarations for the ESM bundle
+- [x] Reword the Settings JSDoc: paths are never prepared without callbacks
+- [x] README: corrected setting defaults and a JSDoc @type tip for a
+  separate settings variable
+- [x] Test: type-check import, require, bundle and JSDoc consumers with tsc; guard dist/walk.d.cts against missing exported types
+- [x] Test: path settings are not read without callbacks
+
+
+
 ### 7.0.0 (2026-10-05)
 - [x] Docs: Update the skill to `walk`;
 - [x] Feature: Added `FINISH` to both callbacks. Return `FINISH()` to omit the current value or branch and stop immediately. From `objectCallback`, `FINISH(value)` selects a final branch whose key callbacks receive `isFinished:true`, including nested leaves, without further object callbacks; without keyCallback the value is included directly. From `keyCallback`, `FINISH(value)` includes the supplied value directly and stops immediately. Unrelated pending containers are not completed; `settings.copy:false` still returns `undefined`;
