@@ -12,5 +12,5 @@ package-lock.json
 README_v.2.x.x.md
 README_v.3.x.x.md
 README_v.4.x.x.md
-rollup.config.js
+vite.config.js
 tsconfig.json
