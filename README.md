@@ -11,6 +11,8 @@
 
 Mask values, remove branches, and reshape objects while building a new result. Or inspect the data without creating a copy. `walk` travels through nested objects and arrays for you, so one or two callback functions can replace layers of loops and repeated transformations.
 
+Walk is designed for JSON-like data: nested objects, arrays, and their values. It also accepts some other JavaScript values for convenience, but it is not a general-purpose clone for every object type. See [What gets copied](#what-gets-copied) for the reference and compatibility rules.
+
 A deep copy is the starting point. What you do during the copy is where it gets interesting:
 
 ```js
@@ -158,7 +160,7 @@ result.profile !== data.profile  // true
 result.scores !== data.scores    // true
 ```
 
-Objects and arrays get new containers. Supported built-in values and functions keep their original references; see [What gets copied](#what-gets-copied).
+JSON-like objects and arrays generally get new containers. Recognized built-in values and functions keep their original references; see [What gets copied](#what-gets-copied) for the compatibility limits.
 
 A plain copy is also fast. On large inputs, `walk ({ data })` measured faster than the platform's `structuredClone`, and it completed a 4,000-level chain where `structuredClone` exceeded the call stack. See [Compared with structuredClone](#compared-with-structuredclone).
 
@@ -511,7 +513,7 @@ npm run cover
 
 ## What gets copied
 
-`walk` creates new containers for objects and arrays. It works with their own enumerable string keys. Primitives retain their values, and the following values retain their references:
+`walk` is intended for JSON-like objects and arrays. It creates new containers from their own enumerable string keys. Primitives retain their values. For compatibility, functions, DOM nodes, and recognized instances of the following built-in types are treated as leaves and retain their references:
 
 | Value | Behaviour |
 | --- | --- |
@@ -520,7 +522,9 @@ npm run cover
 | `Map`, `Set`, `WeakMap`, `WeakSet` | Same reference in the result |
 | `ArrayBuffer`, `DataView`, typed arrays | Same reference in the result |
 
-These values reach `keyCallback` as leaves; their contents are not walked. The same rules apply to values returned by callbacks.
+Recognized values reach `keyCallback` as leaves; their contents are not walked. The same rules apply to values returned by callbacks. A retained reference is shared with the source: changing that value through the result or a callback can also change the original. If independent copies are needed, the caller is responsible for using a suitable clone operation.
+
+Support for non-JSON object types is a convenience, not a guarantee that every object is recognized or copied correctly. Most built-in checks use `instanceof`, so values created in another JavaScript realm may not be recognized and can instead be treated as ordinary objects. Objects with a truthy `nodeType` property are treated as DOM nodes and retained by reference, even when they are plain data objects. Check the behavior for any non-JSON values or data containing such a property before relying on it.
 
 ```js
 let data = { profile:{ name:'Peter' }, when:new Date ( '2026-01-15' ), greet:() => 'Hello' };
@@ -588,7 +592,7 @@ The factory is your application code. `walk` stays focused on traversal, callbac
 - With cycle detection enabled, circular references to ancestors are preserved inside the copy. Repeated references on separate branches are copied independently; their shared identity is not preserved.
 - Non-enumerable and symbol keys, object prototypes, and property descriptors are not preserved. Enumerable getters contribute their returned values.
 - Callbacks are synchronous. Returned promises are not awaited. For asynchronous callbacks, see [walk-async](https://github.com/PeterNaydenov/walk-async).
-- Built-in values listed above are shared by reference. Use a suitable clone operation for those values if they need independent copies.
+- Non-JSON object support is provided for convenience. Recognized built-in values are shared by reference; the caller is responsible for handling them and verifying compatibility with their data.
 
 ## Links
 
